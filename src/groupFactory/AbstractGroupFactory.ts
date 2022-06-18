@@ -1,17 +1,25 @@
 import axios, { AxiosResponse } from "axios";
 import { Invoker } from "../invoker/Invoker";
+import { Api } from "../api/Api";
+import { IDatabase } from "../interface/interface";
+
 
 abstract class AbstractGroupFactory {
   private accessToken?: string;
   constructor(
-    private api: IApi,
-    private db: database,
+    private api: Api,
+    private db: IDatabase,
     private refreshToken: string
   ) {}
 
-  protected async getMultiMemberMsg(members: Array<string>) {}
+  async getMultiMemberMsg(
+    group: string,
+    members: Array<string>,
+    starDate: string,
+    endDate: string
+  ) {}
 
-  protected async getMemberList() {
+  async getMemberList() {
     await this.db.init();
     const isExist = await this.db.checkMemberList();
     if (!isExist) {
@@ -19,7 +27,7 @@ abstract class AbstractGroupFactory {
       const data = ((await axios.get("", { headers })) as AxiosResponse).data;
       //TODO: 整理資料
       // .....
-      const list = [];
+      const list: Array<object> = [];
       //
       await this.db.storeMemberList(list);
       return list;
@@ -29,16 +37,20 @@ abstract class AbstractGroupFactory {
     return list;
   }
 
-  protected async getMemberInfo(members: Array<string>) {
+  async getMemberInfo(members: Array<string>) {
     await this.db.init();
-
   }
 
-  protected async getSpecTimeMsg() {}
+  async getSpecTimeMsg(
+     group: string,
+     member: string,
+     starDate: string,
+     endDate: string
+  ) {}
 
-  protected async downloadSpecTimeItems(starDate: "string", endDate: string) {}
+  async downloadSpecTimeItems(starDate: "string", endDate: string) {}
 
-  protected getInvoker() {
+  getInvoker() {
     return new Invoker(this);
   }
   protected abstract getAuth(): Promise<string>;
