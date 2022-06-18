@@ -1,11 +1,12 @@
-type Tdownload = {
+type TdownloadItem = {
   link: string;
-  filenames: string;
+  date: string;
   dir: string;
   fileExtension: string;
+  type:string
 };
 
 
 export {
-  Tdownload
+  TdownloadItem
 }
