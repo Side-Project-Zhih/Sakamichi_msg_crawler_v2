@@ -1,12 +1,15 @@
 import { AbstractGroupFactory } from "../groupFactory/AbstractGroupFactory";
 import { ICommand } from "../interface/interface";
 
+
 class Invoker {
   private commandList: Array<ICommand> = [];
   constructor(private receiver: AbstractGroupFactory | void) {}
 
   setCommand(command: ICommand) {
-    command.setReceiver(this.receiver);
+    if (command.setReceiver !== undefined) {
+      command.setReceiver(this.receiver);
+    }
     this.commandList.push(command);
   }
   async execute() {
@@ -17,4 +20,4 @@ class Invoker {
 }
 
 
-export {Invoker}
+export { Invoker };
