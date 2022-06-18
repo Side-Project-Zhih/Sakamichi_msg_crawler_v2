@@ -1,10 +1,10 @@
 import { ICommand } from "../interface/interface";
-import { TdownloadItem } from "../type/type";
+import { TDownloadItem } from "../type/type";
 import { pipeline } from "stream/promises";
 import fs from "fs";
 import axios, { AxiosResponse } from "axios";
 class CommandDownloadItem implements ICommand {
-  constructor(private item: TdownloadItem) {}
+  constructor(private item: TDownloadItem) {}
 
   async execute() {
     const { link, fileExtension, date, type, dir } = this.item;

@@ -1,4 +1,4 @@
-type TdownloadItem = {
+type TDownloadItem = {
   link: string;
   date: string;
   dir: string;
@@ -8,5 +8,5 @@ type TdownloadItem = {
 
 
 export {
-  TdownloadItem
+  TDownloadItem
 }
