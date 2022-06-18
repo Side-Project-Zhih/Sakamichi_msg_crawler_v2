@@ -1,0 +1,92 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "browser",
+      "program": "${workspaceFolder}/index.js",
+      // "request": "browser",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "blogCrawlerSakura",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/app.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "args": [
+        "-g",
+        "sakura",
+        "-m",
+        "11",
+        "21",
+        "06",
+        "07",
+        "14",
+        "15",
+        "44",
+        "46",
+        "47",
+        "50",
+        "51",
+        "54",
+        "58"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "blogCrawlerNogi",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/app.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "args": ["-g", "nogi", "-m", "264", "48008", "48006", "48018", "40007"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "blogCrawlerHinata",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/app.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "args": ["-g", "hinata", "-m", "14", "23", "6"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "look sakura members",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/app.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "args": ["-s"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "look nogi members",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/app.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "args": ["-n"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "look hinata members",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/app.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "args": ["-h"]
+    }
+  ]
+}
