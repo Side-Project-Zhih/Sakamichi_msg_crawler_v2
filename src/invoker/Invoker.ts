@@ -7,7 +7,10 @@ class Invoker {
   constructor(private receiver: AbstractGroupFactory | void) {}
 
   setCommand(command: ICommand) {
-    if (command.setReceiver !== undefined) {
+    if (
+      command.setReceiver !== undefined &&
+      this.receiver instanceof AbstractGroupFactory
+    ) {
       command.setReceiver(this.receiver);
     }
     this.commandList.push(command);
