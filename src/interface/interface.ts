@@ -9,9 +9,17 @@ interface IDatabase {
   init(): Promise<void>;
   storeMemberList(members: Array<TMember>): Promise<void>;
   bulkStoreMsg(messages: Array<TMessage>): Promise<void>;
-  getMemberList(): Promise<Array<TMember>>;
-  getMembersInfo(members: Array<string>): Promise<Array<TMember>>;
-  checkMemberList(): Promise<boolean>;
+  getMemberList(group: string): Promise<Array<TMember>>;
+  getMembersInfo(
+    group: string,
+    members: Array<string>
+  ): Promise<Array<TMember>>;
+  checkMemberList(group: string): Promise<boolean>;
+  updateMemberLastUpdate(
+    group: string,
+    memberId: string,
+    date: string
+  ): Promise<void>;
 }
 
 export { ICommand, IDatabase };
