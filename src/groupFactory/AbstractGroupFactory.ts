@@ -77,6 +77,10 @@ abstract class AbstractGroupFactory {
 
       for (const message of messages) {
         const { type, text, file, published_at, updated_at ,state} = message;
+        const dateObject = dayjs.utc(published_at);
+        const year = dateObject.format('YYYY')
+        const month = dateObject.format('MM')
+        const day = dateObject.format("DD");
 
         const storeObj: TMessage = {
           member_id: memberId,
@@ -86,6 +90,9 @@ abstract class AbstractGroupFactory {
           state,
           published_at: dayjs.utc(published_at).format(DATE_FORMAT),
           updated_at: dayjs.utc(updated_at).format(DATE_FORMAT),
+          year,
+          month,
+          day
         };
 
         const date = dayjs.utc(published_at).format(FILE_DATE_FORMAT);
