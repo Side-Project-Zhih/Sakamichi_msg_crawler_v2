@@ -1,0 +1,32 @@
+
+  <div class="container d-flex justify-content-center">
+    <form class="col-6" method="post" action="http://localhost:3000/query">
+      <div class="h1 pt-5 pb-5 ">BLOG SELECTOR </div>
+      <h3 for="group" class=" mb-3">Group</h3>
+      <select id="group"   name="group"  class="form-select mb-5 p-3" aria-label="Default select example">
+        <option selected value='sakura'>櫻坂46</option>
+        <option value="nogi">乃木坂46</option>
+        <option value="hinata">日向坂46</option>
+      </select>
+      <h3 for="group" class=" mb-3">Member</h3>
+
+      <select id="member" name="memberId"  class="form-select  mb-5 p-3" aria-label="Default select example">
+        {{#each memberList.sakura}}
+          <option value={{this.member_id}}>{{this.name}}</option>
+        {{/each}}
+      </select>
+
+      <h3 for="group" class=" mb-3">Member</h3>
+      <input class="w-100 mb-5 p-3" type="month" name="date" id="date" value={{now}}>
+
+      <div class="d-flex justify-content-center">
+        <button class="btn-secondary w-50 p-2 rounded" type="submit">SEND</button>
+      </div>
+    </form>
+    <div id="memberList" hidden>{{jsonMemberList}}</div>
+
+  
+  </div>
+
+
+

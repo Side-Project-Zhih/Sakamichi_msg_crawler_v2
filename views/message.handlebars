@@ -1,0 +1,176 @@
+  <div class="container">
+    <div class="col2-wrap-in2 ">
+      <div class="col-l-wrap">
+        <!-- <div id="app"> -->
+        <div data-v-25197153="" id="home">
+          <div data-v-25197153="" class="container-group">
+            <div data-v-25197153="" spellcheck="false" class="talk-header talk-header-{{member.group}}">{{member.name}} {{date}}</div>
+            <div data-v-25197153=""><span data-v-25197153="">
+                {{#each messages}}
+
+                {{#equal this.type 'voice'}}  
+               <!-- 聲音 -->
+                <div data-v-25197153="" class="talk-item" draggable="false">
+                  <div data-v-25197153="" class="talk-avatar"><img data-v-25197153=""
+                      src="/{{../member.group}}/profile/{{../member.name}}.jpg" draggable="false"></div>
+                  <div data-v-25197153="" class="talk-msg">
+                    <div data-v-25197153="" class="msg-info">
+                      <div data-v-25197153="">{{member.name}}</div>
+                      <div data-v-25197153="" spellcheck="false" style="min-width: 30px;">{{this.published_at}}
+                      </div>
+                    </div>
+                    <div data-v-25197153="" class="msg-bubble">
+                      <div data-v-25197153="" class="content-wrapper"><img data-v-25197153="" hidden="hidden"
+                          draggable="false">
+                        <video src='/{{this.dir}}/{{this.file}}' controls style="width: 95%; height: 50px;"></video>
+                        <!-- 有文字 -->
+                        {{#if this.text}}
+                        <div
+                          data-v-25197153=""
+                          spellcheck="false"
+                          class="msg-content"
+                          style="min-height: 20px;"
+                        >
+                          {{this.text}}
+                        </div>
+                        {{/if}}
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {{/equal}}
+                {{#equal this.type 'picture'}}  
+                <!-- 圖片含文字-->
+                <div data-v-25197153="" class="talk-item">
+                  <div data-v-25197153="" class="talk-avatar"><img data-v-25197153=""
+                      src="/{{../member.group}}/profile/{{../member.name}}.jpg"></div>
+                  <div data-v-25197153="" class="talk-msg">
+                    <div data-v-25197153="" class="msg-info">
+                      <div data-v-25197153="">{{member.name}}</div>
+                      <div data-v-25197153="" spellcheck="false" style="min-width: 30px;">{{this.published_at}}
+                      </div>
+                    </div>
+                    <div data-v-25197153="" class="msg-bubble">
+                      <div data-v-25197153="" class="content-wrapper">
+                        <!-- 有圖片 -->
+                        <img src='/{{this.dir}}/{{this.file}}' data-v-25197153="">
+                            <!-- 有文字 -->
+                            {{#if this.text}}
+                              <div
+                                data-v-25197153=""
+                                spellcheck="false"
+                                class="msg-content"
+                                style="min-height: 20px;"
+                              >
+                                {{this.text}}
+                              </div>
+                            {{/if}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {{/equal}}
+
+                {{#equal this.type 'video'}}  
+                <!-- 影片 -->
+                <div data-v-25197153="" class="talk-item">
+                  <div data-v-25197153="" class="talk-avatar"><img data-v-25197153=""
+                      src="/{{../member.group}}/profile/{{../member.name}}.jpg"></div>
+                  <div data-v-25197153="" class="talk-msg">
+                    <div data-v-25197153="" class="msg-info">
+                      <div data-v-25197153="">{{member.name}}</div>
+                      <div data-v-25197153="" spellcheck="false" style="min-width: 30px;">{{this.published_at}}
+                      </div>
+                    </div>
+                    <div data-v-25197153="" class="msg-bubble">
+                      <div data-v-25197153="" class="content-wrapper">
+                        <div class="msg-video">
+                          <video id="video" class="video-js  vjs-big-play-centered " preload="auto" controls
+                            data-setup="{}">
+                            <source src="/{{this.dir}}/{{this.file}}" type="">
+                          </video>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {{/equal}}  
+                {{#equal this.type 'text'}}  
+                <!-- 文字 -->
+                <div data-v-25197153="" class="talk-item">
+                  <div data-v-25197153="" class="talk-avatar"><img data-v-25197153=""
+                      src="/{{../member.group}}/profile/{{../member.name}}.jpg"></div>
+                  <div data-v-25197153="" class="talk-msg">
+                    <div data-v-25197153="" class="msg-info">
+                      <div data-v-25197153="">{{member.name}}</div>
+                      <div data-v-25197153="" spellcheck="false" style="min-width: 30px;">{{this.published_at}}
+                      </div>
+                    </div>
+                    <div data-v-25197153="" class="msg-bubble">
+                      <div data-v-25197153="" class="content-wrapper"><img data-v-25197153="" hidden="hidden">
+                        <div data-v-25197153="" spellcheck="false" class="msg-content" style="min-height: 20px;">
+                          {{this.text}}
+                        </div>
+                        <!---->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {{/equal}}  
+
+
+                {{/each }}
+        
+
+
+            </div>
+          </div>
+        </div>
+        <!-- </div> -->
+      </div>
+      <div class="col-r">
+        <div class="blog-wdget-area">
+
+          <div class="brog-newentry-r">
+            <div class="com-title-ej">
+              <a href="http://localhost:3000/">
+                <p class="part-eigo wf-a pt-5" style="margin-bottom: 30px;">MESSAGE SELECTOR</p>
+              </a>
+              <form action="http://localhost:3000/query" method="post" class="d-flex flex-column"
+                style="margin-bottom: 50px;">
+                <select name="memberId" class="mb-4">
+                  {{#each members}}
+                  <option {{#equal this.member_id ../member.member_id}} selected{{/equal}} value={{this.member_id}}>{{this.name}}</option>
+                  {{/each}}
+
+                </select>
+                <input type="month" class="mb-4" name="date" id="date" value={{year_month}}>
+                <input type="hidden" name="group" value={{member.group}}>
+                <button id="query" type="submit" class="btn-light w-50 p-1">SEND</button>
+              </form>
+              <p class="mb-3">{{member.name}}</p>
+              <img class="img-fluid" src="/{{member.group}}/profile/{{member.name}}.jpg" alt="">
+            </div>
+            <ul class="com-blog-minipart">
+              {{#each monthList}}
+              <li class="box"><a class="w-100" href={{this.url}}>
+
+                  <div class="txt">
+                    <div class="date-title w-100 d-flex justify-content-between">
+                      <h3 class="title">{{../member.name}} </h3>
+                      <p>{{this.date}}</p>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              {{/each}}
+            </ul>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
