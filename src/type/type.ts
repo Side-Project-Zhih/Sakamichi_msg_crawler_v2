@@ -1,6 +1,6 @@
 type TDownloadItem = {
   link: string;
-  date: string;
+  filename: string;
   dir: string;
   fileExtension: string;
   type: string;
@@ -13,8 +13,35 @@ type TRequestHeader = {
   Authorization?: string;
 };
 
-type TMember = {};
+type TMember = {
+  member_id: string;
+  name: string;
+  group: string;
+  last_updated?: string;
+};
 
-type TMessage = {};
+type TResMessage = {
+  id: number;
+  group_id: number;
+  member_id: number;
+  state: string;
+  type: string;
+  text: string;
+  file: string;
+  published_at: string;
+  updated_at: string;
+};
 
-export { TDownloadItem, TRequestHeader, TMember, TMessage };
+type TMessage = {
+  id?: string;
+  group: string;
+  member_id: string;
+  type: string;
+  text: string;
+  dir?: string;
+  file?: string;
+  published_at: string;
+  updated_at: string;
+};
+
+export { TDownloadItem, TRequestHeader, TMember, TResMessage, TMessage };
