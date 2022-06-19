@@ -1,11 +1,11 @@
 import { TRequestHeader } from "../type/type";
 
 abstract class Api {
-  protected abstract GET_UPDATE_TOKEN: string;
-  protected abstract GET_MEMBER_LIST: string;
-  protected abstract GET_MESSAGE: string;
+   abstract GET_UPDATE_TOKEN: string;
+   abstract GET_MEMBER_LIST: string;
+   abstract GET_MESSAGE: string;
   
-  protected getRequestHeader(accessToken: string | void) {
+   getRequestHeader(accessToken: string | void) {
     const output: TRequestHeader = {
       Connection: "keep-alive",
       Accept: "application/json",
@@ -18,7 +18,7 @@ abstract class Api {
     return output;
   }
 
-  protected getMsgApi(
+   getMsgApi(
     memberId: string,
     queryParams: { [prop: string]: string }
   ) {
