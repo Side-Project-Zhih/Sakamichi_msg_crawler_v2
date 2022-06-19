@@ -1,6 +1,6 @@
 import { AbstractGroupFactory } from "../groupFactory/AbstractGroupFactory";
 import { ICommand } from "../interface/interface";
-
+const LIMIT = 50;
 
 class Invoker {
   private commandList: Array<ICommand> = [];
@@ -16,11 +16,21 @@ class Invoker {
     this.commandList.push(command);
   }
   async execute() {
-    for (const command of this.commandList) {
-      await command.execute();
+    if (this.commandList.length === 0) {
+      return;
+    }
+
+    const rounds = Math.ceil(this.commandList.length / LIMIT);
+    for (let round = 0; round < rounds; round++) {
+      const startIndex = round * LIMIT;
+      const endIndex = (round + 1) * LIMIT;
+      const runList = this.commandList
+        .slice(startIndex, endIndex)
+        .map((mission) => mission.execute());
+        
+      await Promise.allSettled(runList);
     }
   }
 }
-
 
 export { Invoker };
