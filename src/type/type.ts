@@ -42,6 +42,7 @@ type TMessage = {
   file?: string;
   published_at: string;
   updated_at: string;
+  state: string;
 };
 
 export { TDownloadItem, TRequestHeader, TMember, TResMessage, TMessage };
