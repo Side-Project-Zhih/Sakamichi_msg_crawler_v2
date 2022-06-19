@@ -7,11 +7,11 @@ class CommandDownloadItem implements ICommand {
   constructor(private item: TDownloadItem) {}
 
   async execute() {
-    const { link, fileExtension, date, type, dir } = this.item;
+    const { link, fileExtension, filename, type, dir } = this.item;
     const res: AxiosResponse = await axios.get(link, {
       responseType: "stream",
     });
-    const filePath = `${process.cwd()}/public/${dir}/${date}-${type}.${fileExtension}`;
+    const filePath = `${process.cwd()}/public/${dir}/${filename}.${fileExtension}`;
     return await pipeline(res.data, fs.createWriteStream(filePath));
   }
 }
