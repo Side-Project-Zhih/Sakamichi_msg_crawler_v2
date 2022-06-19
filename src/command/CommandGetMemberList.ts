@@ -8,8 +8,10 @@ class CommandGetMemberList implements ICommand {
     if (this._receiver === undefined) {
       throw new Error();
     }
-    await this._receiver.getMemberList();
+    const list = await this._receiver.getMemberList();
+    console.log(list)
   }
+
   setReceiver(receiver: AbstractGroupFactory) {
     this._receiver = receiver;
   }
