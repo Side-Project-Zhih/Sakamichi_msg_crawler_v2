@@ -14,39 +14,40 @@
     {
       "type": "pwa-node",
       "request": "launch",
-      "name": "blogCrawlerSakura",
+      "name": "msgCrawler_v2_nogi",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/app.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
-      "args": [
-        "-g",
-        "sakura",
-        "-m",
-        "11",
-        "21",
-        "06",
-        "07",
-        "14",
-        "15",
-        "44",
-        "46",
-        "47",
-        "50",
-        "51",
-        "54",
-        "58"
-      ]
+      "outFiles": ["${workspaceFolder}/dst/**/*.js"],
+      "args": ["-g", "nogi", "-m", "29", "40", "30"]
     },
     {
       "type": "pwa-node",
       "request": "launch",
-      "name": "blogCrawlerNogi",
+      "name": "msgCrawler_v2_sakura",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/app.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
-      "args": ["-g", "nogi", "-m", "264", "48008", "48006", "48018", "40007"]
+      "outFiles": ["${workspaceFolder}/dst/**/*.js"],
+      "args": [
+        "-g",
+        "sakura",
+        "-m",
+        "21",
+        "12",
+        "15",
+        "16",
+        "33",
+        "45",
+        "47",
+        "48",
+        "51",
+        "52",
+        "56",
+        "60",
+        "7",
+        "8"
+      ]
     },
     {
       "type": "pwa-node",
@@ -55,7 +56,7 @@
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/app.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dst/**/*.js"],
       "args": ["-g", "hinata", "-m", "14", "23", "6"]
     },
     {
@@ -65,7 +66,7 @@
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/app.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dst/**/*.js"],
       "args": ["-s"]
     },
     {
@@ -75,7 +76,7 @@
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/app.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dst/**/*.js"],
       "args": ["-n"]
     },
     {
@@ -85,7 +86,7 @@
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/app.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dst/**/*.js"],
       "args": ["-h"]
     }
   ]
