@@ -56,13 +56,16 @@ abstract class AbstractGroupFactory {
       startDate = member.last_updated
         ? dayjs.utc(member.last_updated).toISOString()
         : dayjs.utc("20120101").toISOString();
+
+      // startDate = dayjs.utc("20120101").toISOString();
       endDate = dayjs.utc(new Date()).toISOString();
 
       const dir = `${group}/${member.name}`;
-      const event = `${dir} downloading`;
+      const event = `${dir} DOWNLOAD COST TIME`;
 
       await mkdirp(`${process.cwd()}/public/${dir}`);
 
+      console.log(`${dir} DOWNLOAD START`);
       //============================================================================
       console.time(event);
 
@@ -73,13 +76,14 @@ abstract class AbstractGroupFactory {
       const messages = await this.fetchMsg(memberId, startDate, endDate, []);
 
       for (const message of messages) {
-        const { type, text, file, published_at, updated_at } = message;
+        const { type, text, file, published_at, updated_at ,state} = message;
 
         const storeObj: TMessage = {
           member_id: memberId,
           group,
           type,
           text,
+          state,
           published_at: dayjs.utc(published_at).format(DATE_FORMAT),
           updated_at: dayjs.utc(updated_at).format(DATE_FORMAT),
         };
@@ -136,7 +140,7 @@ abstract class AbstractGroupFactory {
       await this.db.updateMemberLastUpdate(group, memberId, last_updated);
       console.timeEnd(event);
       //============================================================================
-      console.log(`${dir} download finish`);
+      console.log(`${dir} DOWNLOAD FINISHED`);
     }
   }
 
