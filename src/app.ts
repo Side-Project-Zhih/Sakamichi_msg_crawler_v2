@@ -5,6 +5,7 @@ import { CommandGetMemberList } from "./command/CommandGetMemberList";
 import { CommandGetMultiMemberMsg } from "./command/CommandGetMultiMemberMsg";
 import { NogiFactory } from "./groupFactory/NogiFactory";
 import { SakuraFactory } from "./groupFactory/SakuraFactory";
+import { HinataFactory } from "./groupFactory/HinataFactory";
 import { AbstractGroupFactory } from "./groupFactory/AbstractGroupFactory";
 
 import yargs from "yargs";
@@ -68,8 +69,8 @@ async function main() {
         refreshToken = process.env.SAKURA_REFRESH_TOKEN as string;
         factory = new SakuraFactory(refreshToken, db);
       } else if (args.showHinataMember) {
-        // refreshToken = process.env.NOGI_REFRESH_TOKEN as string;
-        // factory = new NogiFactory(refreshToken, db);
+        refreshToken = process.env.HINATA_REFRESH_TOKEN as string;
+        factory = new HinataFactory(refreshToken, db);
       }
 
       if (factory === undefined) {
@@ -92,6 +93,10 @@ async function main() {
       case "sakura": {
         refreshToken = process.env.SAKURA_REFRESH_TOKEN as string;
         factory = new SakuraFactory(refreshToken, db);
+      }
+      case "hinata": {
+        refreshToken = process.env.HINATA_REFRESH_TOKEN as string;
+        factory = new HinataFactory(refreshToken, db);
       }
     }
 

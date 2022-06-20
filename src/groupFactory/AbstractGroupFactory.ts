@@ -36,11 +36,13 @@ abstract class AbstractGroupFactory {
       const res: AxiosResponse = await axios.get(api, { headers });
       let data = res.data as { [prop: number | string]: string }[];
 
-      const list = data.map((item) => ({
-        member_id: "" + item.id,
-        name: item.name,
-        group,
-      }));
+      const list = data
+        .filter((item) => item.state === "open")
+        .map((item) => ({
+          member_id: "" + item.id,
+          name: item.name,
+          group,
+        }));
 
       await this.db.storeMemberList(list);
     }
@@ -76,10 +78,10 @@ abstract class AbstractGroupFactory {
       const messages = await this.fetchMsg(memberId, startDate, endDate, []);
 
       for (const message of messages) {
-        const { type, text, file, published_at, updated_at ,state} = message;
+        const { type, text, file, published_at, updated_at, state } = message;
         const dateObject = dayjs.utc(published_at);
-        const year = dateObject.format('YYYY')
-        const month = dateObject.format('MM')
+        const year = dateObject.format("YYYY");
+        const month = dateObject.format("MM");
         const day = dateObject.format("DD");
 
         const storeObj: TMessage = {
@@ -92,7 +94,7 @@ abstract class AbstractGroupFactory {
           updated_at: dayjs.utc(updated_at).format(DATE_FORMAT),
           year,
           month,
-          day
+          day,
         };
 
         const date = dayjs.utc(published_at).format(FILE_DATE_FORMAT);
@@ -162,11 +164,13 @@ abstract class AbstractGroupFactory {
       const res: AxiosResponse = await axios.get(apiUrl, { headers });
       let data = res.data as { [prop: number | string]: string }[];
 
-      const list = data.map((item) => ({
-        member_id: "" + item.id,
-        name: item.name,
-        group,
-      }));
+      const list = data
+        .filter((item) => item.state === "open")
+        .map((item) => ({
+          member_id: "" + item.id,
+          name: item.name,
+          group,
+        }));
 
       await this.db.storeMemberList(list);
       return list;
