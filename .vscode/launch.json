@@ -52,12 +52,12 @@
     {
       "type": "pwa-node",
       "request": "launch",
-      "name": "blogCrawlerHinata",
+      "name": "msgCrawler_v2_hinata",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/app.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outFiles": ["${workspaceFolder}/dst/**/*.js"],
-      "args": ["-g", "hinata", "-m", "14", "23", "6"]
+      "args": ["-g", "hinata", "-m", "36"]
     },
     {
       "type": "pwa-node",
