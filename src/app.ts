@@ -93,10 +93,12 @@ async function main() {
       case "sakura": {
         refreshToken = process.env.SAKURA_REFRESH_TOKEN as string;
         factory = new SakuraFactory(refreshToken, db);
+        break;
       }
       case "hinata": {
         refreshToken = process.env.HINATA_REFRESH_TOKEN as string;
         factory = new HinataFactory(refreshToken, db);
+        break;
       }
     }
 
