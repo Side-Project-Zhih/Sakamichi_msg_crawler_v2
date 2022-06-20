@@ -108,6 +108,7 @@ app.get(
       .toArray();
 
     return res.render("message", {
+      webTitle: `${req.member.name} ${year}/${month}/${day}`,
       messages,
       member: req.member,
       monthList: req.monthList,
