@@ -78,10 +78,12 @@ async function main() {
             case "sakura": {
                 refreshToken = process.env.SAKURA_REFRESH_TOKEN;
                 factory = new SakuraFactory_1.SakuraFactory(refreshToken, db);
+                break;
             }
             case "hinata": {
                 refreshToken = process.env.HINATA_REFRESH_TOKEN;
                 factory = new HinataFactory_1.HinataFactory(refreshToken, db);
+                break;
             }
         }
         if (factory === undefined) {
