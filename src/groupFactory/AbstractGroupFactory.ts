@@ -25,159 +25,167 @@ abstract class AbstractGroupFactory {
     startDate: string | void,
     endDate: string | void
   ) {
-    const group = this.group;
-    await this.db.init();
+    try {
+      const group = this.group;
+      await this.db.init();
 
-    const isPass = await this.db.checkMemberList(group);
-    if (!isPass) {
-      await this.getAuth();
-      const api = this.api.GET_MEMBER_LIST;
-      const headers = this.api.getRequestHeader(this.accessToken);
-      const res: AxiosResponse = await axios.get(api, { headers });
-      let data = res.data as { [prop: number | string]: string }[];
+      const isPass = await this.db.checkMemberList(group);
+      if (!isPass) {
+        await this.getAuth();
+        const api = this.api.GET_MEMBER_LIST;
+        const headers = this.api.getRequestHeader(this.accessToken);
+        const res: AxiosResponse = await axios.get(api, { headers });
+        let data = res.data as { [prop: number | string]: string }[];
 
-      const list = data
-        .filter((item) => item.state === "open")
-        .map((item) => ({
-          member_id: "" + item.id,
-          name: item.name,
-          group,
-        }));
+        const list = data
+          .filter((item) => item.state === "open")
+          .map((item) => ({
+            member_id: "" + item.id,
+            name: item.name,
+            group,
+          }));
 
-      await this.db.storeMemberList(list);
-    }
-
-    const membersInfo = await this.db.getMembersInfo(group, members);
-
-    for (const memberId of members) {
-      const member = membersInfo.find((item) => item.member_id === memberId);
-      if (!member) {
-        continue;
+        await this.db.storeMemberList(list);
       }
 
-      startDate = member.last_updated
-        ? dayjs.utc(member.last_updated).toISOString()
-        : dayjs.utc("20120101").toISOString();
+      const membersInfo = await this.db.getMembersInfo(group, members);
 
-      // startDate = dayjs.utc("20120101").toISOString();
-      endDate = dayjs.utc(new Date()).toISOString();
-
-      const dir = `${group}/${member.name}`;
-      const event = `${dir} DOWNLOAD COST TIME`;
-
-      await mkdirp(`${process.cwd()}/public/${dir}`);
-
-      console.log(`${dir} DOWNLOAD START`);
-      //============================================================================
-      console.time(event);
-
-      const downLoadInvoker = new Invoker();
-      const storeMessages: Array<TMessage> = [];
-
-      await this.getAuth();
-      const messages = await this.fetchMsg(memberId, startDate, endDate, []);
-
-      for (const message of messages) {
-        const { type, text, file, published_at, updated_at, state } = message;
-        const dateObject = dayjs.utc(published_at);
-        const year = dateObject.format("YYYY");
-        const month = dateObject.format("MM");
-        const day = dateObject.format("DD");
-
-        const storeObj: TMessage = {
-          member_id: memberId,
-          group,
-          type,
-          text,
-          state,
-          published_at: dayjs.utc(published_at).format(DATE_FORMAT),
-          updated_at: dayjs.utc(updated_at).format(DATE_FORMAT),
-          year,
-          month,
-          day,
-        };
-
-        const date = dayjs.utc(published_at).format(FILE_DATE_FORMAT);
-
-        if (type !== "text") {
-          let fileExtension: string = "";
-          const filename: string = `${date}-${type}`;
-
-          const downloadObj: TDownloadItem = {
-            link: file,
-            filename,
-            dir,
-            fileExtension,
-            type,
-          };
-
-          switch (type) {
-            case "picture": {
-              fileExtension = "jpg";
-              break;
-            }
-            case "voice": {
-              fileExtension = "mp4";
-              break;
-            }
-            case "video": {
-              fileExtension = "mp4";
-              break;
-            }
-            case "text": {
-              break;
-            }
-          }
-
-          downloadObj.fileExtension = fileExtension;
-
-          storeObj.dir = dir;
-          storeObj.file = `${filename}.${fileExtension}`;
-          downLoadInvoker.setCommand(new CommandDownloadItem(downloadObj));
+      for (const memberId of members) {
+        const member = membersInfo.find((item) => item.member_id === memberId);
+        if (!member) {
+          continue;
         }
 
-        storeMessages.push(storeObj);
+        startDate = member.last_updated
+          ? dayjs.utc(member.last_updated).toISOString()
+          : dayjs.utc("20120101").toISOString();
+
+        // startDate = dayjs.utc("20120101").toISOString();
+        endDate = dayjs.utc(new Date()).toISOString();
+
+        const dir = `${group}/${member.name}`;
+        const event = `${dir} DOWNLOAD COST TIME`;
+
+        await mkdirp(`${process.cwd()}/public/${dir}`);
+
+        console.log(`${dir} DOWNLOAD START`);
+        //============================================================================
+        console.time(event);
+
+        const downLoadInvoker = new Invoker();
+        const storeMessages: Array<TMessage> = [];
+
+        await this.getAuth();
+        const messages = await this.fetchMsg(memberId, startDate, endDate, []);
+
+        for (const message of messages) {
+          const { type, text, file, published_at, updated_at, state } = message;
+          const dateObject = dayjs.utc(published_at);
+          const year = dateObject.format("YYYY");
+          const month = dateObject.format("MM");
+          const day = dateObject.format("DD");
+
+          const storeObj: TMessage = {
+            member_id: memberId,
+            group,
+            type,
+            text,
+            state,
+            published_at: dayjs.utc(published_at).format(DATE_FORMAT),
+            updated_at: dayjs.utc(updated_at).format(DATE_FORMAT),
+            year,
+            month,
+            day,
+          };
+
+          const date = dayjs.utc(published_at).format(FILE_DATE_FORMAT);
+
+          if (type !== "text") {
+            let fileExtension: string = "";
+            const filename: string = `${date}-${type}`;
+
+            const downloadObj: TDownloadItem = {
+              link: file,
+              filename,
+              dir,
+              fileExtension,
+              type,
+            };
+
+            switch (type) {
+              case "picture": {
+                fileExtension = "jpg";
+                break;
+              }
+              case "voice": {
+                fileExtension = "mp4";
+                break;
+              }
+              case "video": {
+                fileExtension = "mp4";
+                break;
+              }
+              case "text": {
+                break;
+              }
+            }
+
+            downloadObj.fileExtension = fileExtension;
+
+            storeObj.dir = dir;
+            storeObj.file = `${filename}.${fileExtension}`;
+            downLoadInvoker.setCommand(new CommandDownloadItem(downloadObj));
+          }
+
+          storeMessages.push(storeObj);
+        }
+
+        if (storeMessages.length > 0) {
+          await this.db.bulkStoreMsg(storeMessages);
+        }
+
+        await downLoadInvoker.execute();
+
+        const last_updated = dayjs.utc(endDate).format(DATE_FORMAT);
+        await this.db.updateMemberLastUpdate(group, memberId, last_updated);
+        console.timeEnd(event);
+        //============================================================================
+        console.log(`${dir} DOWNLOAD FINISHED`);
       }
-
-      if (storeMessages.length > 0) {
-        await this.db.bulkStoreMsg(storeMessages);
-      }
-
-      await downLoadInvoker.execute();
-
-      const last_updated = dayjs.utc(endDate).format(DATE_FORMAT);
-      await this.db.updateMemberLastUpdate(group, memberId, last_updated);
-      console.timeEnd(event);
-      //============================================================================
-      console.log(`${dir} DOWNLOAD FINISHED`);
+    } catch (error) {
+      console.error(error);
     }
   }
 
   async getMemberList() {
-    const group = this.group;
-    await this.db.init();
-    const isExist = await this.db.checkMemberList(group);
-    if (!isExist) {
-      await this.getAuth();
-      const apiUrl = this.api.GET_MEMBER_LIST;
-      const headers = this.api.getRequestHeader(this.accessToken);
-      const res: AxiosResponse = await axios.get(apiUrl, { headers });
-      let data = res.data as { [prop: number | string]: string }[];
+    try {
+      const group = this.group;
+      await this.db.init();
+      const isExist = await this.db.checkMemberList(group);
+      if (!isExist) {
+        await this.getAuth();
+        const apiUrl = this.api.GET_MEMBER_LIST;
+        const headers = this.api.getRequestHeader(this.accessToken);
+        const res: AxiosResponse = await axios.get(apiUrl, { headers });
+        let data = res.data as { [prop: number | string]: string }[];
 
-      const list = data
-        .filter((item) => item.state === "open")
-        .map((item) => ({
-          member_id: "" + item.id,
-          name: item.name,
-          group,
-        }));
+        const list = data
+          .filter((item) => item.state === "open")
+          .map((item) => ({
+            member_id: "" + item.id,
+            name: item.name,
+            group,
+          }));
 
-      await this.db.storeMemberList(list);
+        await this.db.storeMemberList(list);
+        return list;
+      }
+      const list = await this.db.getMemberList(group);
+
       return list;
+    } catch (error) {
+      console.error(error);
     }
-    const list = await this.db.getMemberList(group);
-
-    return list;
   }
 
   async getSpecTimeMsg(

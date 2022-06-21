@@ -1,5 +1,7 @@
 import { ICommand } from "../interface/interface";
 import { AbstractGroupFactory } from "../groupFactory/AbstractGroupFactory";
+import ERROR_MESSAGE from "../const/error";
+
 
 class CommandGetSpecTimeMsg implements ICommand {
   private _receiver?: AbstractGroupFactory;
@@ -12,7 +14,7 @@ class CommandGetSpecTimeMsg implements ICommand {
 
   async execute() {
     if (this._receiver === undefined) {
-      throw new Error();
+      throw new Error(ERROR_MESSAGE.NO_RECEIVER);
     }
     await this._receiver.getSpecTimeMsg(
       this._group,
