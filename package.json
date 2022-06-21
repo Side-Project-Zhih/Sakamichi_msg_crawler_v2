@@ -16,6 +16,7 @@
     "axios": "^0.27.2",
     "dayjs": "^1.11.3",
     "dotenv": "^16.0.1",
+    "express": "^4.18.1",
     "express-handlebars": "^6.0.6",
     "mkdirp": "^1.0.4",
     "mongodb": "^4.7.0",
