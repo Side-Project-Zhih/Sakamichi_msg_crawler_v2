@@ -19,7 +19,7 @@
       "program": "${workspaceFolder}/src/app.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outFiles": ["${workspaceFolder}/dst/**/*.js"],
-      "args": ["-g", "nogi", "-m", "29", "40", "30"]
+      "args": ["-g", "nogi"]
     },
     {
       "type": "pwa-node",
@@ -29,25 +29,7 @@
       "program": "${workspaceFolder}/src/app.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outFiles": ["${workspaceFolder}/dst/**/*.js"],
-      "args": [
-        "-g",
-        "sakura",
-        "-m",
-        "21",
-        "12",
-        "15",
-        "16",
-        "33",
-        "45",
-        "47",
-        "48",
-        "51",
-        "52",
-        "56",
-        "60",
-        "7",
-        "8"
-      ]
+      "args": ["-g", "sakura"]
     },
     {
       "type": "pwa-node",
@@ -57,7 +39,68 @@
       "program": "${workspaceFolder}/src/app.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outFiles": ["${workspaceFolder}/dst/**/*.js"],
-      "args": ["-g", "hinata", "-m", "36"]
+      "args": ["-g", "hinata"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "updatePhoneImage -- sakura",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/app.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dst/**/*.js"],
+      "args": ["--update_phone", "sakura"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "updatePhoneImage-- nogi",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/app.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dst/**/*.js"],
+      "args": ["--update_phone", "nogi"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "updatePhoneImage-- hinata",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/app.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dst/**/*.js"],
+      "args": ["--update_phone", "hinata"]
+    },
+
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "update member list -- sakura",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/app.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dst/**/*.js"],
+      "args": ["--update_member", "sakura"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "update member list-- nogi",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/app.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dst/**/*.js"],
+      "args": ["--update_member", "nogi"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "update member list-- hinata",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/app.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dst/**/*.js"],
+      "args": ["--update_member", "hinata"]
     },
     {
       "type": "pwa-node",
