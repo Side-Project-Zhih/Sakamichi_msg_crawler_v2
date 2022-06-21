@@ -68,6 +68,39 @@ app.post("/query", async (req, res) => {
 });
 
 app.get(
+  "/:group/:memberId/messages/:year_month/nodata",
+  getMember,
+  async (req, res) => {
+    const { group, year_month } = req.params;
+      const dateObject = dayjs(year_month, "YYYYMM");
+      const year = dateObject.format("YYYY");
+      const month = dateObject.format("MM");
+
+    const members = await req.db
+      .collection("Member")
+      .find({
+        group,
+        last_updated: {
+          $exists: true,
+        },
+      })
+      .sort({ member_id: 1 })
+      .toArray();
+
+    return res.render("message", {
+      webTitle: `${req.member.name} ${year}/${month}`,
+      nodata: true,
+      message: "該月份沒有任何的  message !!!!!",
+      members,
+      member: req.member,
+      monthList: req.monthList,
+      year_month: `${year}-${month}`,
+      date: `${year}/${month}`,
+    });
+  }
+);
+
+app.get(
   "/:group/:memberId/messages/:year_month/:day",
   getMonthList,
   getMember,
@@ -116,15 +149,6 @@ app.get(
       year_month: `${year}-${month}`,
       date: `${year}/${month}/${day}`,
     });
-  }
-);
-
-app.get(
-  "/:group/:memberId/messages/:year_month/nodata",
-  getMember,
-  async (req, res) => {
-    //no data
-    res.send("nodata");
   }
 );
 
@@ -179,8 +203,8 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.use("/", (req, res) => {
-  res.send("404");
+app.use("/404", (req, res) => {
+  res.redirect("http://localhost:3000/");
 });
 
 app.listen(3000, () =>

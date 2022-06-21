@@ -6,6 +6,29 @@
           <div data-v-25197153="" class="container-group">
             <div data-v-25197153="" spellcheck="false" class="talk-header talk-header-{{member.group}}">{{member.name}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{date}}</div>
             <div data-v-25197153=""><span data-v-25197153="">
+              {{#if nodata}}
+                    <div data-v-25197153="" class="talk-item ">
+                  <div data-v-25197153="" class="talk-avatar">
+                    <img data-v-25197153=""
+                      src="/{{member.group}}/profile/{{member.name}}.jpg">
+                      </div>
+                  <div data-v-25197153="" class="talk-msg">
+                    <div data-v-25197153="" class="msg-info">
+                      <div data-v-25197153="">{{member.name}}</div>
+                      <div data-v-25197153="" spellcheck="false" style="min-width: 30px;">{{this.published_at}}
+                      </div>
+                    </div>
+                    <div data-v-25197153="" class="msg-bubble">
+                      <div data-v-25197153="" class="content-wrapper"><img data-v-25197153="" hidden="hidden">
+                        <div data-v-25197153="" spellcheck="false" class="msg-content" style="min-height: 20px;">
+                          {{message}}
+                        </div>
+                        <!---->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {{/if}}
                 {{#each messages}}
 
                 {{#equal this.type 'voice'}}  
