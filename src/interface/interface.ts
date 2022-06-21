@@ -15,6 +15,12 @@ interface IDatabase {
     members: Array<string>
   ): Promise<Array<TMember>>;
   checkMemberList(group: string): Promise<boolean>;
+  updatePhoneImage(
+    memberId: string,
+    group: string,
+    imageUrl: string
+  ): Promise<string | undefined>;
+  checkMemberByName(group: string, name: string): Promise<boolean>;
   updateMemberLastUpdate(
     group: string,
     memberId: string,

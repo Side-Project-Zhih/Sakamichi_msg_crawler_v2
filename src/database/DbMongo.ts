@@ -16,6 +16,9 @@ class DbMongo implements IDatabase {
     if (this._database === undefined) {
       throw new Error(ERROR_MESSAGE.NO_DB_CONNECTION);
     }
+    if (members.length === 0) {
+      return;
+    }
 
     try {
       const database = this._database;
@@ -117,9 +120,54 @@ class DbMongo implements IDatabase {
         group,
       });
       const isExist = !!member;
-      if(!isExist) {
-        console.log('沒有member list')
+
+      return isExist;
+    } catch (error) {
+      console.error(error);
+      throw new Error();
+    }
+  }
+
+  async updatePhoneImage(memberId: string, group: string, imageUrl: string) {
+    if (this._database === undefined) {
+      throw new Error(ERROR_MESSAGE.NO_DB_CONNECTION);
+    }
+    try {
+      const database = this._database;
+      const data = await database.collection("Member").findOneAndUpdate(
+        { member_id: memberId, group },
+        {
+          $set: {
+            phone_image: imageUrl,
+          },
+        },
+        {
+          returnDocument: "before",
+        }
+      );
+
+      if (data.value !== null && data.value.phone_image !== imageUrl) {
+        return imageUrl;
       }
+
+      return;
+    } catch (error) {
+      console.error(error);
+      throw new Error();
+    }
+  }
+  async checkMemberByName(group: string, name: string) {
+    if (this._database === undefined) {
+      throw new Error(ERROR_MESSAGE.NO_DB_CONNECTION);
+    }
+    try {
+      const database = this._database;
+      const member = await database.collection("Member").findOne({
+        group,
+        name,
+      });
+      const isExist = !!member;
+
       return isExist;
     } catch (error) {
       console.error(error);

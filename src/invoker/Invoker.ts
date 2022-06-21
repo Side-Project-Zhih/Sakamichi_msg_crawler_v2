@@ -15,6 +15,11 @@ class Invoker {
     }
     this.commandList.push(command);
   }
+
+  get getAmount() {
+    return this.commandList.length;
+  }
+
   async execute() {
     if (this.commandList.length === 0) {
       return;
@@ -27,7 +32,7 @@ class Invoker {
       const runList = this.commandList
         .slice(startIndex, endIndex)
         .map((mission) => mission.execute());
-        
+
       await Promise.allSettled(runList);
     }
   }
