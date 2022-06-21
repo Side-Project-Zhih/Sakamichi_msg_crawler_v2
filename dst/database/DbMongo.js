@@ -115,6 +115,9 @@ class DbMongo {
                 group,
             });
             const isExist = !!member;
+            if (!isExist) {
+                console.log('沒有member list');
+            }
             return isExist;
         }
         catch (error) {
