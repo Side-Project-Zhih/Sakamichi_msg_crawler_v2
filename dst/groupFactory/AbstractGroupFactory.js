@@ -22,20 +22,41 @@ class AbstractGroupFactory {
             const group = this.group;
             await this.db.init();
             const isPass = await this.db.checkMemberList(group);
+            await this.getAuth();
             if (!isPass) {
-                await this.getAuth();
                 const api = this.api.GET_MEMBER_LIST;
                 const headers = this.api.getRequestHeader(this.accessToken);
                 const res = await axios_1.default.get(api, { headers });
                 let data = res.data;
-                const list = data
+                const downLoadInvoker = new Invoker_1.Invoker();
+                await (0, mkdirp_1.default)(`${process.cwd()}/public/${group}/profile`);
+                const storeList = data
                     .filter((item) => item.state === "open")
-                    .map((item) => ({
-                    member_id: "" + item.id,
-                    name: item.name,
-                    group,
-                }));
-                await this.db.storeMemberList(list);
+                    .map((item) => {
+                    downLoadInvoker.setCommand(new CommandDownloadItem_1.CommandDownloadItem({
+                        link: item.thumbnail,
+                        filename: item.name,
+                        dir: `${group}/profile`,
+                        fileExtension: "jpg",
+                        type: "picture",
+                    }));
+                    return {
+                        member_id: "" + item.id,
+                        name: item.name,
+                        group,
+                    };
+                });
+                await this.db.storeMemberList(storeList);
+                await downLoadInvoker.execute();
+            }
+            if (!members) {
+                const api = this.api.GET_MEMBER_LIST;
+                const headers = this.api.getRequestHeader(this.accessToken);
+                const res = await axios_1.default.get(api, { headers });
+                let data = res.data;
+                members = data
+                    .filter((member) => member.subscription)
+                    .map((member) => member.id + "");
             }
             const membersInfo = await this.db.getMembersInfo(group, members);
             for (const memberId of members) {
@@ -56,7 +77,6 @@ class AbstractGroupFactory {
                 console.time(event);
                 const downLoadInvoker = new Invoker_1.Invoker();
                 const storeMessages = [];
-                await this.getAuth();
                 const messages = await this.fetchMsg(memberId, startDate, endDate, []);
                 for (const message of messages) {
                     const { type, text, file, published_at, updated_at, state } = message;
@@ -137,14 +157,31 @@ class AbstractGroupFactory {
                 const headers = this.api.getRequestHeader(this.accessToken);
                 const res = await axios_1.default.get(apiUrl, { headers });
                 let data = res.data;
-                const list = data
+                const downLoadInvoker = new Invoker_1.Invoker();
+                await (0, mkdirp_1.default)(`${process.cwd()}/public/${group}/profile`);
+                const list = [];
+                const storeList = data
                     .filter((item) => item.state === "open")
-                    .map((item) => ({
-                    member_id: "" + item.id,
-                    name: item.name,
-                    group,
-                }));
-                await this.db.storeMemberList(list);
+                    .map((item) => {
+                    downLoadInvoker.setCommand(new CommandDownloadItem_1.CommandDownloadItem({
+                        link: item.thumbnail,
+                        filename: item.name,
+                        dir: `${group}/profile`,
+                        fileExtension: "jpg",
+                        type: "picture",
+                    }));
+                    list.push({
+                        member_id: "" + item.id,
+                        name: item.name,
+                    });
+                    return {
+                        member_id: "" + item.id,
+                        name: item.name,
+                        group,
+                    };
+                });
+                await this.db.storeMemberList(storeList);
+                await downLoadInvoker.execute();
                 return list;
             }
             const list = await this.db.getMemberList(group);
@@ -152,6 +189,92 @@ class AbstractGroupFactory {
         }
         catch (error) {
             console.error(error);
+        }
+    }
+    async updateMemberList() {
+        try {
+            const group = this.group;
+            await this.db.init();
+            await this.getAuth();
+            const apiUrl = this.api.GET_MEMBER_LIST;
+            const headers = this.api.getRequestHeader(this.accessToken);
+            const res = await axios_1.default.get(apiUrl, { headers });
+            let data = res.data;
+            const downLoadInvoker = new Invoker_1.Invoker();
+            await (0, mkdirp_1.default)(`${process.cwd()}/public/${group}/profile`);
+            const storeList = [];
+            for (const member of data) {
+                if (member.state !== "open") {
+                    continue;
+                }
+                const queryData = await this.db.getMembersInfo(group, [member.id + ""]);
+                if (queryData.length > 0) {
+                    continue;
+                }
+                storeList.push({
+                    member_id: "" + member.id,
+                    name: member.name,
+                    group,
+                });
+                downLoadInvoker.setCommand(new CommandDownloadItem_1.CommandDownloadItem({
+                    link: member.thumbnail,
+                    filename: member.name,
+                    dir: `${group}/profile`,
+                    fileExtension: "jpg",
+                    type: "picture",
+                }));
+            }
+            await this.db.storeMemberList(storeList);
+            console.log("Update member list finished");
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+    async updatePhoneImage() {
+        try {
+            const group = this.group;
+            await this.db.init();
+            await this.getAuth();
+            const apiUrl = this.api.GET_PHONE_IMAGE;
+            const headers = this.api.getRequestHeader(this.accessToken);
+            const res = await axios_1.default.get(apiUrl, { headers });
+            let data = res.data;
+            const downLoadInvoker = new Invoker_1.Invoker();
+            const storeList = [];
+            const date = dayjs_1.default.utc(new Date()).format("YYYY-MM-DD");
+            await (0, mkdirp_1.default)(`${process.cwd()}/public/${group}/phoneImage`);
+            for (const member of data) {
+                const isExistByName = await this.db.checkMemberByName(group, member.name);
+                const queryData = await this.db.getMembersInfo(group, [member.id + ""]);
+                if (!isExistByName || queryData.length === 0) {
+                    continue;
+                }
+                storeList.push({
+                    member_id: "" + member.id,
+                    name: member.name,
+                    group,
+                    phone_image: member.phone_image,
+                });
+                const imageUrl = await this.db.updatePhoneImage(member.id + "", group, member.phone_image);
+                if (imageUrl) {
+                    downLoadInvoker.setCommand(new CommandDownloadItem_1.CommandDownloadItem({
+                        link: imageUrl,
+                        filename: `phone-${member.name}-${date}`,
+                        dir: `${group}/phoneImage`,
+                        fileExtension: "jpg",
+                        type: "picture",
+                    }));
+                }
+            }
+            await this.db.storeMemberList(storeList);
+            console.log(`update phone image count: ${downLoadInvoker.getAmount}`);
+            await downLoadInvoker.execute();
+            console.log("finished update phone image");
+        }
+        catch (error) {
+            console.error(error);
+            throw new Error();
         }
     }
     async getSpecTimeMsg(group, member, starDate, endDate) { }

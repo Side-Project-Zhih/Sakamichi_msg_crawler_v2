@@ -15,6 +15,9 @@ class Invoker {
         }
         this.commandList.push(command);
     }
+    get getAmount() {
+        return this.commandList.length;
+    }
     async execute() {
         if (this.commandList.length === 0) {
             return;

@@ -7,6 +7,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const DbMongo_1 = require("./database/DbMongo");
 const CommandGetMemberList_1 = require("./command/CommandGetMemberList");
 const CommandGetMultiMemberMsg_1 = require("./command/CommandGetMultiMemberMsg");
+const CommandUpdatePhoneImage_1 = require("./command/CommandUpdatePhoneImage");
+const CommandUpdateMemberList_1 = require("./command/CommandUpdateMemberList");
 const NogiFactory_1 = require("./groupFactory/NogiFactory");
 const SakuraFactory_1 = require("./groupFactory/SakuraFactory");
 const HinataFactory_1 = require("./groupFactory/HinataFactory");
@@ -39,6 +41,16 @@ const COMMANDS = {
         describe: "show hinatazaka member id",
         boolean: true,
     },
+    updateMemberList: {
+        alias: "update_member",
+        describe: "update member list, please input group name ex: --update_member nogi",
+        string: true,
+    },
+    updatePhoneImage: {
+        alias: "update_phone",
+        describe: "update phone image, please input group name ex: --update_image nogi",
+        string: true,
+    },
 };
 const args = yargs_1.default.options(COMMANDS).help().argv;
 async function main() {
@@ -66,6 +78,58 @@ async function main() {
             }
             const invoker = factory.getInvoker();
             invoker.setCommand(new CommandGetMemberList_1.CommandGetMemberList());
+            return await invoker.execute();
+        }
+        // COMMAND UPDATE_MEMBER_LIST
+        if (args.updateMemberList) {
+            switch (args.updateMemberList) {
+                case "nogi": {
+                    refreshToken = process.env.NOGI_REFRESH_TOKEN;
+                    factory = new NogiFactory_1.NogiFactory(refreshToken, db);
+                    break;
+                }
+                case "sakura": {
+                    refreshToken = process.env.SAKURA_REFRESH_TOKEN;
+                    factory = new SakuraFactory_1.SakuraFactory(refreshToken, db);
+                    break;
+                }
+                case "hinata": {
+                    refreshToken = process.env.HINATA_REFRESH_TOKEN;
+                    factory = new HinataFactory_1.HinataFactory(refreshToken, db);
+                    break;
+                }
+            }
+            if (factory === undefined) {
+                throw new Error();
+            }
+            const invoker = factory.getInvoker();
+            invoker.setCommand(new CommandUpdateMemberList_1.CommandUpdateMemberList());
+            return await invoker.execute();
+        }
+        // COMMAND UPDATE_PHONE_IMAGE
+        if (args.updatePhoneImage) {
+            switch (args.updatePhoneImage) {
+                case "nogi": {
+                    refreshToken = process.env.NOGI_REFRESH_TOKEN;
+                    factory = new NogiFactory_1.NogiFactory(refreshToken, db);
+                    break;
+                }
+                case "sakura": {
+                    refreshToken = process.env.SAKURA_REFRESH_TOKEN;
+                    factory = new SakuraFactory_1.SakuraFactory(refreshToken, db);
+                    break;
+                }
+                case "hinata": {
+                    refreshToken = process.env.HINATA_REFRESH_TOKEN;
+                    factory = new HinataFactory_1.HinataFactory(refreshToken, db);
+                    break;
+                }
+            }
+            if (factory === undefined) {
+                throw new Error();
+            }
+            const invoker = factory.getInvoker();
+            invoker.setCommand(new CommandUpdatePhoneImage_1.CommandUpdatePhoneImage());
             return await invoker.execute();
         }
         // COMMAND GET_MULTI_MEMBER_MSG
