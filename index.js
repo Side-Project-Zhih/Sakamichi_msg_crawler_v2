@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { MongoClient } = require("mongodb");
 const { engine } = require("express-handlebars");
+const dotenv = require("dotenv");
 
 const path = require("path");
 const dayjs = require("dayjs");
@@ -10,7 +11,10 @@ const getMember = require("./middleware/getMember");
 const getMonthList = require("./middleware/getMonthList");
 
 dayjs().format();
+dotenv.config();
+
 const app = express();
+const PORT = process.env.PORT || 2000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(process.cwd(), "public")));
@@ -72,9 +76,9 @@ app.get(
   getMember,
   async (req, res) => {
     const { group, year_month } = req.params;
-      const dateObject = dayjs(year_month, "YYYYMM");
-      const year = dateObject.format("YYYY");
-      const month = dateObject.format("MM");
+    const dateObject = dayjs(year_month, "YYYYMM");
+    const year = dateObject.format("YYYY");
+    const month = dateObject.format("MM");
 
     const members = await req.db
       .collection("Member")
@@ -207,7 +211,7 @@ app.use("/404", (req, res) => {
   res.redirect("http://localhost:3000/");
 });
 
-app.listen(3000, () =>
+app.listen(PORT, () =>
   console.log(
     "Reader is ready. Please input http://localhost:3000/ at browser to surfer messages"
   )
