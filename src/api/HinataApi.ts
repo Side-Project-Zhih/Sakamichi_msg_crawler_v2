@@ -8,6 +8,7 @@ class HinataApi extends Api {
     "https://api.kh.glastonr.net/v2/update_token";
   public GET_MEMBER_LIST: string = "https://api.kh.glastonr.net/v2/groups";
   public GET_MESSAGE: string = "https://api.kh.glastonr.net/v2/groups";
+  public GET_PHONE_IMAGE: string = "https://api.kh.glastonr.net/v2/members";
 }
 
 export { HinataApi };

@@ -8,6 +8,7 @@ class NogiApi extends Api {
     "https://api.n46.glastonr.net/v2/update_token";
   public GET_MEMBER_LIST: string = "https://api.n46.glastonr.net/v2/groups";
   public GET_MESSAGE: string = "https://api.n46.glastonr.net/v2/groups";
+  public GET_PHONE_IMAGE: string = "https://api.n46.glastonr.net/v2/members";
 }
 
 export { NogiApi };
