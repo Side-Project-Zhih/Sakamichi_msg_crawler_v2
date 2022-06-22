@@ -59,10 +59,10 @@ app.post("/query", async (req, res) => {
       .toArray();
 
     const result = queryData[0];
-    let redirectUrl = `http://localhost:3000/${group}/${memberId}/messages/${year}${month}/nodata`;
+    let redirectUrl = `/${group}/${memberId}/messages/${year}${month}/nodata`;
     if (result) {
       const day = result.day;
-      redirectUrl = `http://localhost:3000/${group}/${memberId}/messages/${year}${month}/${day}`;
+      redirectUrl = `/${group}/${memberId}/messages/${year}${month}/${day}`;
     }
 
     return res.redirect(redirectUrl);
@@ -208,11 +208,11 @@ app.get("/", async (req, res) => {
 });
 
 app.use("/404", (req, res) => {
-  res.redirect("http://localhost:3000/");
+  res.redirect("/");
 });
 
 app.listen(PORT, () =>
   console.log(
-    "Reader is ready. Please input http://localhost:3000/ at browser to surfer messages"
+    `Reader is ready. Please input http://localhost:${PORT}/ at browser to surfer messages`
   )
 );

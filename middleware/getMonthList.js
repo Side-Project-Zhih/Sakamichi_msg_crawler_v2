@@ -51,7 +51,7 @@ async function getMonthList(req, res, next) {
   days.sort((a, b) => +a - +b);
   const monthList = days.map((day) => ({
     date: `${year}/${month}/${day}`,
-    url: `http://localhost:3000/${group}/${memberId}/messages/${year}${month}/${day}`,
+    url: `/${group}/${memberId}/messages/${year}${month}/${day}`,
   }));
 
   req.monthList = monthList;
