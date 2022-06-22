@@ -45,9 +45,9 @@ type TMessage = {
   published_at: string;
   updated_at: string;
   state: string;
-  year: string;
-  month: string;
-  day: string;
+  year?: string;
+  month?: string;
+  day?: string;
 };
 
 export { TDownloadItem, TRequestHeader, TMember, TResMessage, TMessage };
