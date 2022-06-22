@@ -1,11 +1,18 @@
 const dayjs = require("dayjs");
 dayjs().format();
 
+const DATE_FORMAT = "YYYYMMDDHHmmss";
+
 async function getMonthList(req, res, next) {
   const { group, memberId, year_month, day } = req.params;
   const dateObject = dayjs(year_month, "YYYYMM");
   const year = dateObject.format("YYYY");
   const month = dateObject.format("MM");
+
+  const offset = -1 * dayjs().utcOffset();
+  const queryDateObject = dayjs.utc(year_month).utcOffset(offset);
+  const startDate = queryDateObject.format(DATE_FORMAT);
+  const endDate = queryDateObject.add(1, "month").format(DATE_FORMAT);
 
   req.date = {
     year,
@@ -13,41 +20,29 @@ async function getMonthList(req, res, next) {
     day,
   };
 
-  const pipeline = [
-    {
-      $match: {
-        group,
-        member_id: memberId,
-        year,
-        month,
-        state: "published",
-      },
-    },
-    {
-      $group: {
-        _id: "month",
-        days: {
-          $addToSet: "$day",
-        },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-      },
-    },
-  ];
-
-  const queryData = await req.db
+  let days = new Set();
+  const msgCursor = req.db
     .collection("Message")
-    .aggregate(pipeline)
-    .toArray();
-  const result = queryData[0];
-  if (!result) {
-    return;
+    .find({
+      group: group,
+      member_id: memberId,
+      published_at: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+      state: "published",
+    })
+
+
+  for await (const message of msgCursor) {
+    const day = dayjs.utc(message.published_at).local().format("DD");
+    const aaa = dayjs.utc(message.published_at).local().format("YYYYMMDD HH:mm:ss");
+    days.add(day);
   }
 
-  const { days } = result;
+  days = Array.from(days);
+
+
   days.sort((a, b) => +a - +b);
   const monthList = days.map((day) => ({
     date: `${year}/${month}/${day}`,

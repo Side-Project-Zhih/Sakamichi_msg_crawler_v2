@@ -6,15 +6,18 @@ const dotenv = require("dotenv");
 
 const path = require("path");
 const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
 
 const getMember = require("./middleware/getMember");
 const getMonthList = require("./middleware/getMonthList");
 
 dayjs().format();
+dayjs.extend(utc);
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 2000;
+const DATE_FORMAT = "YYYYMMDDHHmmss";
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(process.cwd(), "public")));
@@ -43,25 +46,33 @@ app.use(async (req, res, next) => {
 app.post("/query", async (req, res) => {
   const { memberId, date, group } = req.body;
   const [year, month] = date.split("-");
+
+  const offset = -1 * dayjs().utcOffset();
+  const dateObject = dayjs.utc(`${date}`).utcOffset(offset);
+  const startDate = dateObject.format(DATE_FORMAT);
+  const endDate = dateObject.add(1, "month").format(DATE_FORMAT);
+
   try {
     const queryData = await req.db
       .collection("Message")
       .find({
         group,
         member_id: memberId,
-        year,
-        month,
+        published_at: {
+          $gte: startDate,
+          $lt: endDate,
+        },
         state: "published",
       })
-      .project({ day: 1 })
-      .sort({ day: 1 })
+      .project({ published_at: 1 })
+      .sort({ published_at: 1 })
       .limit(1)
       .toArray();
 
     const result = queryData[0];
     let redirectUrl = `/${group}/${memberId}/messages/${year}${month}/nodata`;
     if (result) {
-      const day = result.day;
+      const day = dayjs.utc(result.published_at).local().format("DD");
       redirectUrl = `/${group}/${memberId}/messages/${year}${month}/${day}`;
     }
 
@@ -111,15 +122,22 @@ app.get(
   async (req, res) => {
     const { group, memberId } = req.params;
     const { year, month, day } = req.date;
+
+    const offset = -1 * dayjs().utcOffset();
+    const dateObject = dayjs.utc(`${year}${month}${day}`).utcOffset(offset);
+    const startDate = dateObject.format(DATE_FORMAT);
+    const endDate = dateObject.add(1, "day").format(DATE_FORMAT);
+
     const messages = [];
     const msgCursor = req.db
       .collection("Message")
       .find({
         group: group,
         member_id: memberId,
-        year,
-        month,
-        day,
+        published_at: {
+          $gte: startDate,
+          $lt: endDate,
+        },
         state: "published",
       })
       .sort({
@@ -127,9 +145,10 @@ app.get(
       });
 
     for await (const message of msgCursor) {
-      message.published_at = dayjs(message.published_at).format(
-        "YYYY/MM/DD HH:mm"
-      );
+      message.published_at = dayjs
+        .utc(message.published_at)
+        .local()
+        .format("YYYY/MM/DD HH:mm");
       messages.push(message);
     }
 
@@ -157,38 +176,62 @@ app.get(
 );
 
 app.get("/", async (req, res) => {
-  const nogi = await req.db
-    .collection("Member")
-    .find({
-      group: "nogi",
-      last_updated: {
-        $exists: true,
+  const pipeline = [
+    {
+      $match: {
+        last_updated: {
+          $exists: true,
+        },
       },
-    })
-    .sort({ member_id: 1 })
-    .toArray();
+    },
+    {
+      $sort: {
+        group: 1,
+        member_id: 1,
+      },
+    },
+    {
+      $unset: ["_id"],
+    },
+    {
+      $project: {
+        group: 1,
+        member_id: 1,
+        name: 1,
+      },
+    },
+    {
+      $group: {
+        _id: "$group",
+        members: {
+          $push: {
+            member_id: "$member_id",
+            name: "$name",
+          },
+        },
+      },
+    },
+  ];
+  const data = await req.db.collection("Member").aggregate(pipeline).toArray();
 
-  const sakura = await req.db
-    .collection("Member")
-    .find({
-      group: "sakura",
-      last_updated: {
-        $exists: true,
-      },
-    })
-    .sort({ member_id: 1 })
-    .toArray();
-
-  const hinata = await req.db
-    .collection("Member")
-    .find({
-      group: "hinata",
-      last_updated: {
-        $exists: true,
-      },
-    })
-    .sort({ member_id: 1 })
-    .toArray();
+  let sakura, nogi, hinata;
+  for (const group of data) {
+    group.members.sort((a, b) => +a.member_id - +b.member_id);
+    switch (group._id) {
+      case "sakura": {
+        sakura = group.members;
+        break;
+      }
+      case "nogi": {
+        nogi = group.members;
+        break;
+      }
+      case "hinata": {
+        hinata = group.members;
+        break;
+      }
+    }
+  }
 
   const memberList = {
     sakura,
