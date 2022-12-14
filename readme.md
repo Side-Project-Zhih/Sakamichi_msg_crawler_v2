@@ -1,13 +1,17 @@
 # sakamichi MSG crawler
 -- -
 快速下載message資料保存在database  
-並有簡易server讓你瀏覽blog
+並有簡易server讓你瀏覽msg
 
 **坂道都有支援**  
 
 如果有新功能通常都是櫻坂先，因為我偏心。。。。
 
-## 有成功的請幫我按星星!!!!有問題請在issue發問
+### 有成功的請幫我按星星!!!!有問題請在issue發問  
+### 另外該流程安裝前製流程 part1 part3 與blogCrawler 一致，使用方法也為相同邏輯，查詢指令請用 --help (下面有寫)
+
+&emsp;
+
 
 ## 安裝前置
 ### part 1
