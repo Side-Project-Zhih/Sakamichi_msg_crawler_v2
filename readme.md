@@ -12,6 +12,12 @@
 
 &emsp;
 
+### 下載參考連結
++ [studio 3t](https://studio3t.com/)
++ [mongodb](https://dotblogs.com.tw/explooosion/2018/01/21/040728)
++ [nodejs](https://www.casper.tw/development/2022/01/10/install-nvm/)
++ [vscode](https://visualstudio.microsoft.com/zh-hant/downloads/)
+
 
 ## 安裝前置
 ### part 1
