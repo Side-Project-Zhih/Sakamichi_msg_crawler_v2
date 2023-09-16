@@ -64,9 +64,7 @@ class AbstractGroupFactory {
                 if (!member) {
                     continue;
                 }
-                startDate = member.last_updated
-                    ? dayjs_1.default.utc(member.last_updated).toISOString()
-                    : dayjs_1.default.utc("20120101").toISOString();
+                startDate = this.determineStartDate(member.last_updated, startDate);
                 // startDate = dayjs.utc("20120101").toISOString();
                 endDate = dayjs_1.default.utc(new Date()).toISOString();
                 const dir = `${group}/${member.name}`;
@@ -286,6 +284,14 @@ class AbstractGroupFactory {
         const group = this.group;
         const memberInfo = await this.db.getMembersInfo(group, members);
         return memberInfo;
+    }
+    determineStartDate(lastUpdated, startDate) {
+        if (startDate) {
+            return dayjs_1.default.utc(startDate).toISOString();
+        }
+        return lastUpdated
+            ? dayjs_1.default.utc(lastUpdated).toISOString()
+            : dayjs_1.default.utc("20120101").toISOString();
     }
 }
 exports.AbstractGroupFactory = AbstractGroupFactory;

@@ -11,8 +11,8 @@ class CommandGetMultiMemberMsg implements ICommand {
   private _receiver?: AbstractGroupFactory;
   constructor(
     private _memberList: Array<string>,
-    private _starDate: string | void,
-    private _endDate: string | void
+    private _starDate?: string ,
+    private _endDate?: string
   ) {}
 
   async execute() {

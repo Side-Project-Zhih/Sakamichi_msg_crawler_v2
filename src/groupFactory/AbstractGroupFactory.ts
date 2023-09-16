@@ -22,8 +22,8 @@ abstract class AbstractGroupFactory {
 
   async getMultiMemberMsg(
     members: Array<string>,
-    startDate: string | void,
-    endDate: string | void
+    startDate?: string ,
+    endDate?: string
   ) {
     try {
       const group = this.group;
@@ -81,10 +81,7 @@ abstract class AbstractGroupFactory {
         if (!member) {
           continue;
         }
-
-        startDate = member.last_updated
-          ? dayjs.utc(member.last_updated).toISOString()
-          : dayjs.utc("20120101").toISOString();
+        startDate = this.determineStartDate(member.last_updated, startDate);
 
         // startDate = dayjs.utc("20120101").toISOString();
         endDate = dayjs.utc(new Date()).toISOString();
@@ -374,12 +371,22 @@ abstract class AbstractGroupFactory {
   }
 
   protected abstract getAuth(): Promise<string>;
+
   protected abstract fetchMsg(
     memberId: string,
     starDate: string,
     endDate: string,
     msgContainer: Array<TResMessage>
   ): Promise<Array<TResMessage>>;
+
+  private determineStartDate(lastUpdated?: string, startDate?: string ) {
+      if(startDate) {
+          return dayjs.utc(startDate).toISOString();
+      }
+    return lastUpdated
+        ? dayjs.utc(lastUpdated).toISOString()
+        : dayjs.utc("20120101").toISOString();
+  }
 }
 
 export { AbstractGroupFactory };

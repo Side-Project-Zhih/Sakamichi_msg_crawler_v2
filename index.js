@@ -33,12 +33,16 @@ app.engine(
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
 
+let db;
 app.use(async (req, res, next) => {
-  const client = new MongoClient(
-    "mongodb://0.0.0.0:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000"
-  );
-  await client.connect();
-  const db = client.db("MessageCrawler");
+    const DB_HOST = process.env.DB_HOST || "localhost";
+if (!db) {
+    const client = new MongoClient(
+        `mongodb://${DB_HOST}:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000`
+    );
+    await client.connect();
+    db = client.db("MessageCrawler");
+}
   req.db = db;
   return next();
 });

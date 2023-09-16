@@ -13,6 +13,7 @@ import { HinataFactory } from "./groupFactory/HinataFactory";
 import { AbstractGroupFactory } from "./groupFactory/AbstractGroupFactory";
 
 import yargs from "yargs";
+import dayjs from "dayjs";
 dotenv.config();
 
 const COMMANDS = {
@@ -20,6 +21,12 @@ const COMMANDS = {
     alias: "g",
     describe: "chose group sakura / nogi / hinata ex: -g sakura",
     string: true,
+  },
+  time: {
+    alias: "t",
+    describe: "chose specific time ex: -t 2020-01-01; It's is possible to cowork with -g",
+    string: true,
+
   },
   members: {
     alias: "m",
@@ -65,15 +72,17 @@ const args = yargs.options(COMMANDS).help().argv as {
   showHinataMember: boolean;
   updateMemberList: string;
   updatePhoneImage: string;
+  time: string;
   // startDate: string;
 };
 
 async function main() {
   try {
     console.log("DOWNLOAD START");
+    const DB_HOST = process.env.DB_HOST || 'localhost';
 
     const db = new DbMongo(
-      "mongodb://0.0.0.0:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000",
+      `mongodb://${DB_HOST}:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000`,
       "MessageCrawler"
     );
     let factory: AbstractGroupFactory | undefined;
@@ -185,7 +194,12 @@ async function main() {
     }
 
     const invoker = factory.getInvoker();
-    invoker.setCommand(new CommandGetMultiMemberMsg(args.members));
+    const time = args.time;
+    if(time && !dayjs(time).isValid()){
+        console.log("Invalid time format please input YYYYMMDD");
+      return
+    }
+    invoker.setCommand(new CommandGetMultiMemberMsg(args.members, time));
 
     await invoker.execute();
   } catch (error) {

@@ -13,11 +13,17 @@ const NogiFactory_1 = require("./groupFactory/NogiFactory");
 const SakuraFactory_1 = require("./groupFactory/SakuraFactory");
 const HinataFactory_1 = require("./groupFactory/HinataFactory");
 const yargs_1 = __importDefault(require("yargs"));
+const dayjs_1 = __importDefault(require("dayjs"));
 dotenv_1.default.config();
 const COMMANDS = {
     group: {
         alias: "g",
         describe: "chose group sakura / nogi / hinata ex: -g sakura",
+        string: true,
+    },
+    time: {
+        alias: "t",
+        describe: "chose specific time ex: -t 2020-01-01; It's is possible to cowork with -g",
         string: true,
     },
     members: {
@@ -56,7 +62,8 @@ const args = yargs_1.default.options(COMMANDS).help().argv;
 async function main() {
     try {
         console.log("DOWNLOAD START");
-        const db = new DbMongo_1.DbMongo("mongodb://0.0.0.0:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000", "MessageCrawler");
+        const DB_HOST = process.env.DB_HOST || 'localhost';
+        const db = new DbMongo_1.DbMongo(`mongodb://${DB_HOST}:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000`, "MessageCrawler");
         let factory;
         let refreshToken;
         // COMMAND GET_MEMBER_LIST
@@ -154,7 +161,12 @@ async function main() {
             throw new Error();
         }
         const invoker = factory.getInvoker();
-        invoker.setCommand(new CommandGetMultiMemberMsg_1.CommandGetMultiMemberMsg(args.members));
+        const time = args.time;
+        if (time && !(0, dayjs_1.default)(time).isValid()) {
+            console.log("Invalid time format please input YYYYMMDD");
+            return;
+        }
+        invoker.setCommand(new CommandGetMultiMemberMsg_1.CommandGetMultiMemberMsg(args.members, time));
         await invoker.execute();
     }
     catch (error) {
