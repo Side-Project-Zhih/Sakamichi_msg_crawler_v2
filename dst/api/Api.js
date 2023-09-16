@@ -6,7 +6,7 @@ class Api {
         const output = {
             Connection: "keep-alive",
             Accept: "application/json",
-            "X-Talk-App-ID": "jp.co.sonymusic.communication.sakurazaka 2.2",
+            "X-Talk-App-ID": "jp.co.sonymusic.communication.sakurazaka 2.3",
         };
         if (accessToken) {
             output.Authorization = `Bearer ${accessToken}`;

@@ -56,7 +56,7 @@ const args = yargs_1.default.options(COMMANDS).help().argv;
 async function main() {
     try {
         console.log("DOWNLOAD START");
-        const db = new DbMongo_1.DbMongo("mongodb://localhost:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000", "MessageCrawler");
+        const db = new DbMongo_1.DbMongo("mongodb://0.0.0.0:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000", "MessageCrawler");
         let factory;
         let refreshToken;
         // COMMAND GET_MEMBER_LIST

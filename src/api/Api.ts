@@ -10,7 +10,7 @@ abstract class Api {
     const output: TRequestHeader = {
       Connection: "keep-alive",
       Accept: "application/json",
-      "X-Talk-App-ID": "jp.co.sonymusic.communication.sakurazaka 2.2",
+      "X-Talk-App-ID": "jp.co.sonymusic.communication.sakurazaka 2.3",
     };
 
     if (accessToken) {

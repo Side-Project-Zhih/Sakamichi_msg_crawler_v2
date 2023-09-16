@@ -73,7 +73,7 @@ async function main() {
     console.log("DOWNLOAD START");
 
     const db = new DbMongo(
-      "mongodb://localhost:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000",
+      "mongodb://0.0.0.0:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000",
       "MessageCrawler"
     );
     let factory: AbstractGroupFactory | undefined;

@@ -35,7 +35,7 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(async (req, res, next) => {
   const client = new MongoClient(
-    "mongodb://localhost:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000"
+    "mongodb://0.0.0.0:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000"
   );
   await client.connect();
   const db = client.db("MessageCrawler");
