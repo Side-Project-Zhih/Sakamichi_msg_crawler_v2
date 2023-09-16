@@ -1,20 +1,20 @@
-import { ICommand } from "../interface/interface";
-import { AbstractGroupFactory } from "../groupFactory/AbstractGroupFactory";
+import {ICommand} from "../interface/interface";
+import {AbstractGroupFactory} from "../groupFactory/AbstractGroupFactory";
 import ERROR_MESSAGE from "../const/error";
 
 class CommandUpdateMemberList implements ICommand {
-  private _receiver?: AbstractGroupFactory;
+    private _receiver?: AbstractGroupFactory;
 
-  async execute() {
-    if (this._receiver === undefined) {
-      throw new Error(ERROR_MESSAGE.NO_RECEIVER);
+    async execute() {
+        if (this._receiver === undefined) {
+            throw new Error(ERROR_MESSAGE.NO_RECEIVER);
+        }
+        await this._receiver.updateMemberList();
     }
-    await this._receiver.updateMemberList();
-  }
 
-  setReceiver(receiver: AbstractGroupFactory) {
-    this._receiver = receiver;
-  }
+    setReceiver(receiver: AbstractGroupFactory) {
+        this._receiver = receiver;
+    }
 }
 
-export { CommandUpdateMemberList };
+export {CommandUpdateMemberList};
