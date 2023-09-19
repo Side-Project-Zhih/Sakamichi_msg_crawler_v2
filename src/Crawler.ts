@@ -116,14 +116,12 @@ export default class Crawler {
             const downloadItems = DownloadDataModel.transformMessage(rawMessages, member);
 
             const last_updated = dayjs.utc(endDate).format(DATE_FORMAT);
-            if (messages.length === 0) {
-                await this.db.updateMemberLastUpdate(this.apiController.name, memberId, last_updated);
-                console.timeEnd(event);
-                continue;
+
+            if (messages.length !== 0) {
+                await this.db.bulkStoreMsg(messages);
+                await this.downloader.download(downloadItems);
             }
 
-            await this.db.bulkStoreMsg(messages);
-            await this.downloader.download(downloadItems);
             await this.db.updateMemberLastUpdate(this.apiController.name, memberId, last_updated);
             console.timeEnd(event);
             //============================================================================
