@@ -1,25 +1,17 @@
-import mongodb, {MongoClient} from "mongodb";
+import {IDatabase} from "./IDatabase";
+import {Db, MongoClient} from "mongodb";
+import {Member} from "../type/Member";
+import {Message} from "../type/Message";
 
-import {IDatabase} from "../interface/interface";
-import {TMember, TMessage} from "../type/type";
-import ERROR_MESSAGE from "../const/error";
 
-class DbMongo implements IDatabase {
-    private _database?: mongodb.Db;
+export default class DbMongo implements IDatabase {
+    private _database?: Db;
 
     constructor(private _url: string, private _dbName: string) {
     }
 
-    async init() {
-        const client = new MongoClient(this._url);
-        await client.connect();
-        this._database = client.db(this._dbName);
-    }
-
-    async storeMemberList(members: Array<TMember>) {
-        if (this._database === undefined) {
-            throw new Error(ERROR_MESSAGE.NO_DB_CONNECTION);
-        }
+    async storeMemberList(members: Array<Member>) {
+        await this.lazyLoad();
         if (members.length === 0) {
             return;
         }
@@ -39,20 +31,17 @@ class DbMongo implements IDatabase {
                 },
             }));
 
-            await database.collection("Member").bulkWrite(formatArray);
+            await this._database?.collection("Member").bulkWrite(formatArray);
         } catch (error) {
             console.error(error);
             throw new Error();
         }
     }
 
-    async bulkStoreMsg(messages: Array<TMessage>) {
-        if (this._database === undefined) {
-            throw new Error(ERROR_MESSAGE.NO_DB_CONNECTION);
-        }
+    async bulkStoreMsg(messages: Array<Message>) {
+        await this.lazyLoad();
 
         try {
-            const database = this._database;
             const formatArray = messages.map((message) => ({
                 updateOne: {
                     filter: {
@@ -67,7 +56,7 @@ class DbMongo implements IDatabase {
                 },
             }));
 
-            await database.collection("Message").bulkWrite(formatArray);
+            await this._database?.collection("Message").bulkWrite(formatArray);
         } catch (error) {
             console.error(error);
             throw new Error();
@@ -75,20 +64,15 @@ class DbMongo implements IDatabase {
     }
 
     async getMemberList(group: string) {
-        if (this._database === undefined) {
-            throw new Error(ERROR_MESSAGE.NO_DB_CONNECTION);
-        }
+        await this.lazyLoad();
         try {
-            const database = this._database;
-
-            const list = await database
-                .collection("Member")
+            const list = await this._database?.collection("Member")
                 .find({group})
                 .project({_id: 0, group: 0})
                 .sort({member_id: 1})
                 .toArray();
 
-            const output = list as Array<TMember>;
+            const output = list as Array<Member>;
             return output;
         } catch (error) {
             console.error(error);
@@ -97,32 +81,25 @@ class DbMongo implements IDatabase {
     }
 
     async getMembersInfo(group: string, members: Array<string>) {
-        if (this._database === undefined) {
-            throw new Error(ERROR_MESSAGE.NO_DB_CONNECTION);
-        }
-        const database = this._database;
-        const list = await database
-            .collection("Member")
+        await this.lazyLoad();
+        const list = await this._database?.collection("Member")
             .find({
                 group,
                 member_id: {
                     $in: members,
                 },
             })
-            .project({_id: 0, group: 0})
+            .project({_id: 0})
             .toArray();
 
-        const output = list as Array<TMember>;
+        const output = list as Array<Member>;
         return output;
     }
 
     async checkMemberList(group: string) {
-        if (this._database === undefined) {
-            throw new Error(ERROR_MESSAGE.NO_DB_CONNECTION);
-        }
+        await this.lazyLoad();
         try {
-            const database = this._database;
-            const member = await database.collection("Member").findOne({
+            const member = await this._database?.collection("Member").findOne({
                 group,
             });
             const isExist = !!member;
@@ -135,12 +112,9 @@ class DbMongo implements IDatabase {
     }
 
     async updatePhoneImage(memberId: string, group: string, imageUrl: string) {
-        if (this._database === undefined) {
-            throw new Error(ERROR_MESSAGE.NO_DB_CONNECTION);
-        }
+        await this.lazyLoad();
         try {
-            const database = this._database;
-            const data = await database.collection("Member").findOneAndUpdate(
+            const data = await this._database?.collection("Member").findOneAndUpdate(
                 {member_id: memberId, group},
                 {
                     $set: {
@@ -152,11 +126,6 @@ class DbMongo implements IDatabase {
                 }
             );
 
-            if (data.value !== null && data.value.phone_image !== imageUrl) {
-                return imageUrl;
-            }
-
-            return;
         } catch (error) {
             console.error(error);
             throw new Error();
@@ -164,12 +133,9 @@ class DbMongo implements IDatabase {
     }
 
     async checkMemberByName(group: string, name: string) {
-        if (this._database === undefined) {
-            throw new Error(ERROR_MESSAGE.NO_DB_CONNECTION);
-        }
+        await this.lazyLoad();
         try {
-            const database = this._database;
-            const member = await database.collection("Member").findOne({
+            const member = await this._database?.collection("Member").findOne({
                 group,
                 name,
             });
@@ -187,14 +153,10 @@ class DbMongo implements IDatabase {
         memberId: string,
         last_updated: string
     ) {
-        if (this._database === undefined) {
-            throw new Error(ERROR_MESSAGE.NO_DB_CONNECTION);
-        }
-
+        await this.lazyLoad();
         try {
-            const database = this._database;
 
-            await database.collection("Member").updateOne(
+            await this._database?.collection("Member").updateOne(
                 {group, member_id: memberId},
                 {
                     $set: {
@@ -207,6 +169,13 @@ class DbMongo implements IDatabase {
             throw new Error();
         }
     }
+
+    private async lazyLoad() {
+        if (!this._database) {
+            const client = new MongoClient(this._url);
+            await client.connect();
+            this._database = client.db(this._dbName);
+        }
+    }
 }
 
-export {DbMongo};
