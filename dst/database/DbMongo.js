@@ -1,25 +1,13 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DbMongo = void 0;
 const mongodb_1 = require("mongodb");
-const error_1 = __importDefault(require("../const/error"));
 class DbMongo {
     constructor(_url, _dbName) {
         this._url = _url;
         this._dbName = _dbName;
     }
-    async init() {
-        const client = new mongodb_1.MongoClient(this._url);
-        await client.connect();
-        this._database = client.db(this._dbName);
-    }
     async storeMemberList(members) {
-        if (this._database === undefined) {
-            throw new Error(error_1.default.NO_DB_CONNECTION);
-        }
+        await this.lazyLoad();
         if (members.length === 0) {
             return;
         }
@@ -37,7 +25,7 @@ class DbMongo {
                     upsert: true,
                 },
             }));
-            await database.collection("Member").bulkWrite(formatArray);
+            await this._database?.collection("Member").bulkWrite(formatArray);
         }
         catch (error) {
             console.error(error);
@@ -45,11 +33,8 @@ class DbMongo {
         }
     }
     async bulkStoreMsg(messages) {
-        if (this._database === undefined) {
-            throw new Error(error_1.default.NO_DB_CONNECTION);
-        }
+        await this.lazyLoad();
         try {
-            const database = this._database;
             const formatArray = messages.map((message) => ({
                 updateOne: {
                     filter: {
@@ -63,7 +48,7 @@ class DbMongo {
                     upsert: true,
                 },
             }));
-            await database.collection("Message").bulkWrite(formatArray);
+            await this._database?.collection("Message").bulkWrite(formatArray);
         }
         catch (error) {
             console.error(error);
@@ -71,13 +56,9 @@ class DbMongo {
         }
     }
     async getMemberList(group) {
-        if (this._database === undefined) {
-            throw new Error(error_1.default.NO_DB_CONNECTION);
-        }
+        await this.lazyLoad();
         try {
-            const database = this._database;
-            const list = await database
-                .collection("Member")
+            const list = await this._database?.collection("Member")
                 .find({ group })
                 .project({ _id: 0, group: 0 })
                 .sort({ member_id: 1 })
@@ -91,30 +72,23 @@ class DbMongo {
         }
     }
     async getMembersInfo(group, members) {
-        if (this._database === undefined) {
-            throw new Error(error_1.default.NO_DB_CONNECTION);
-        }
-        const database = this._database;
-        const list = await database
-            .collection("Member")
+        await this.lazyLoad();
+        const list = await this._database?.collection("Member")
             .find({
             group,
             member_id: {
                 $in: members,
             },
         })
-            .project({ _id: 0, group: 0 })
+            .project({ _id: 0 })
             .toArray();
         const output = list;
         return output;
     }
     async checkMemberList(group) {
-        if (this._database === undefined) {
-            throw new Error(error_1.default.NO_DB_CONNECTION);
-        }
+        await this.lazyLoad();
         try {
-            const database = this._database;
-            const member = await database.collection("Member").findOne({
+            const member = await this._database?.collection("Member").findOne({
                 group,
             });
             const isExist = !!member;
@@ -126,22 +100,15 @@ class DbMongo {
         }
     }
     async updatePhoneImage(memberId, group, imageUrl) {
-        if (this._database === undefined) {
-            throw new Error(error_1.default.NO_DB_CONNECTION);
-        }
+        await this.lazyLoad();
         try {
-            const database = this._database;
-            const data = await database.collection("Member").findOneAndUpdate({ member_id: memberId, group }, {
+            const data = await this._database?.collection("Member").findOneAndUpdate({ member_id: memberId, group }, {
                 $set: {
                     phone_image: imageUrl,
                 },
             }, {
                 returnDocument: "before",
             });
-            if (data.value !== null && data.value.phone_image !== imageUrl) {
-                return imageUrl;
-            }
-            return;
         }
         catch (error) {
             console.error(error);
@@ -149,12 +116,9 @@ class DbMongo {
         }
     }
     async checkMemberByName(group, name) {
-        if (this._database === undefined) {
-            throw new Error(error_1.default.NO_DB_CONNECTION);
-        }
+        await this.lazyLoad();
         try {
-            const database = this._database;
-            const member = await database.collection("Member").findOne({
+            const member = await this._database?.collection("Member").findOne({
                 group,
                 name,
             });
@@ -167,12 +131,9 @@ class DbMongo {
         }
     }
     async updateMemberLastUpdate(group, memberId, last_updated) {
-        if (this._database === undefined) {
-            throw new Error(error_1.default.NO_DB_CONNECTION);
-        }
+        await this.lazyLoad();
         try {
-            const database = this._database;
-            await database.collection("Member").updateOne({ group, member_id: memberId }, {
+            await this._database?.collection("Member").updateOne({ group, member_id: memberId }, {
                 $set: {
                     last_updated,
                 },
@@ -183,6 +144,13 @@ class DbMongo {
             throw new Error();
         }
     }
+    async lazyLoad() {
+        if (!this._database) {
+            const client = new mongodb_1.MongoClient(this._url);
+            await client.connect();
+            this._database = client.db(this._dbName);
+        }
+    }
 }
-exports.DbMongo = DbMongo;
+exports.default = DbMongo;
 //# sourceMappingURL=DbMongo.js.map

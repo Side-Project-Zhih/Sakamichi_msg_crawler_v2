@@ -22,4 +22,4 @@ class Api {
     }
 }
 exports.Api = Api;
-//# sourceMappingURL=Api.js.map
+//# sourceMappingURL=ApiController.js.map

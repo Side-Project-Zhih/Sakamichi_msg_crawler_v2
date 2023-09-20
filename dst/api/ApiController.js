@@ -1,0 +1,67 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const axios_1 = __importDefault(require("axios"));
+class ApiController {
+    async getAccessToken() {
+        const payload = { refresh_token: this.refreshToken };
+        const headers = this.getRequestHeader();
+        const res = await axios_1.default.post(this.GET_UPDATE_TOKEN, payload, {
+            headers,
+        });
+        const { access_token } = res.data;
+        return access_token;
+    }
+    async getPhoneImage(accessToken) {
+        if (!accessToken)
+            accessToken = await this.getAccessToken();
+        const headers = this.getRequestHeader(accessToken);
+        const res = await axios_1.default.get(this.GET_PHONE_IMAGE, {
+            headers,
+        });
+        return res.data;
+    }
+    async getMessages(memberId, queryParams, accessToken) {
+        if (!accessToken)
+            accessToken = await this.getAccessToken();
+        const headers = this.getRequestHeader(accessToken);
+        const url = this.getMsgApi(memberId, queryParams);
+        const res = await axios_1.default.get(url, {
+            headers,
+        });
+        return res.data;
+    }
+    async getMemberList(accessToken) {
+        if (!accessToken)
+            accessToken = await this.getAccessToken();
+        const headers = this.getRequestHeader(accessToken);
+        const res = await axios_1.default.get(this.GET_MEMBER_LIST, {
+            headers,
+        });
+        // TODO check type
+        const data = res.data;
+        return data.filter(member => member.state === "open");
+    }
+    getMsgApi(memberId, queryParams) {
+        let output = this.GET_MESSAGE + `/${memberId}/timeline?`;
+        for (const key in queryParams) {
+            output += `${key}=${queryParams[key]}&`;
+        }
+        return output;
+    }
+    getRequestHeader(accessToken) {
+        const output = {
+            Connection: "keep-alive",
+            Accept: "application/json",
+            "X-Talk-App-ID": "jp.co.sonymusic.communication.sakurazaka 2.3",
+        };
+        if (accessToken) {
+            output.Authorization = `Bearer ${accessToken}`;
+        }
+        return output;
+    }
+}
+exports.default = ApiController;
+//# sourceMappingURL=ApiController.js.map
