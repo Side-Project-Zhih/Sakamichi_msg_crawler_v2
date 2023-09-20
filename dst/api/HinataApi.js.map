@@ -1,1 +1,0 @@
-{"version":3,"file":"HinataApi.js","sourceRoot":"","sources":["../../src/api/HinataApi.ts"],"names":[],"mappings":";;;AAAA,+BAA4B;AAE5B,MAAM,SAAU,SAAQ,SAAG;IACzB;QACE,KAAK,EAAE,CAAC;QAEH,qBAAgB,GACrB,6CAA6C,CAAC;QACzC,oBAAe,GAAW,uCAAuC,CAAC;QAClE,gBAAW,GAAW,uCAAuC,CAAC;QAC9D,oBAAe,GAAW,wCAAwC,CAAC;IAL1E,CAAC;CAMF;AAEQ,8BAAS"}
