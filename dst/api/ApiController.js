@@ -4,7 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
+const ApiMap_1 = __importDefault(require("./ApiMap"));
 class ApiController {
+    constructor(api) {
+        this.name = api.name;
+        this.GET_UPDATE_TOKEN = api.GET_UPDATE_TOKEN;
+        this.GET_MEMBER_LIST = api.GET_MEMBER_LIST;
+        this.GET_MESSAGE = api.GET_MESSAGE;
+        this.GET_PHONE_IMAGE = api.GET_PHONE_IMAGE;
+        this.refreshToken = api.refreshToken;
+    }
+    static create(groupName) {
+        const api = ApiMap_1.default[groupName];
+        return new ApiController(api);
+    }
     async getAccessToken() {
         const payload = { refresh_token: this.refreshToken };
         const headers = this.getRequestHeader();

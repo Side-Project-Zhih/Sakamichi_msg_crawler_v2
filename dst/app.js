@@ -7,10 +7,11 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const yargs_1 = __importDefault(require("yargs"));
 const commandSetting_1 = require("./const/commandSetting");
 const DbMongo_1 = __importDefault(require("./database/DbMongo"));
-const apiControllerFactory_1 = __importDefault(require("./api/apiControllerFactory"));
 const Crawler_1 = __importDefault(require("./Crawler"));
 const Downloader_1 = __importDefault(require("./Downloader"));
-dotenv_1.default.config();
+const ApiController_1 = __importDefault(require("./api/ApiController"));
+const envPath = `${process.cwd()}/.env`;
+dotenv_1.default.config({ path: envPath });
 const args = yargs_1.default.options(commandSetting_1.COMMANDS).help().argv;
 async function main() {
     try {
@@ -21,7 +22,7 @@ async function main() {
         // COMMAND GET_MEMBER_LIST
         if (args.showMember) {
             const group = args.showMember;
-            const apiController = apiControllerFactory_1.default.create(group);
+            const apiController = ApiController_1.default.create(group);
             const crawler = new Crawler_1.default({
                 apiController: apiController,
                 db: db,
@@ -34,7 +35,7 @@ async function main() {
         // COMMAND UPDATE_MEMBER_LIST
         if (args.updateMemberList) {
             const group = args.updateMemberList;
-            const apiController = apiControllerFactory_1.default.create(group);
+            const apiController = ApiController_1.default.create(group);
             const crawler = new Crawler_1.default({
                 apiController: apiController,
                 db: db,
@@ -46,7 +47,7 @@ async function main() {
         // COMMAND UPDATE_PHONE_IMAGE
         if (args.updatePhoneImage) {
             const group = args.updatePhoneImage;
-            const apiController = apiControllerFactory_1.default.create(group);
+            const apiController = ApiController_1.default.create(group);
             const crawler = new Crawler_1.default({
                 apiController: apiController,
                 db: db,
@@ -57,7 +58,7 @@ async function main() {
         }
         if (args.group) {
             const group = args.group;
-            const apiController = apiControllerFactory_1.default.create(group);
+            const apiController = ApiController_1.default.create(group);
             const crawler = new Crawler_1.default({
                 apiController: apiController,
                 db: db,
