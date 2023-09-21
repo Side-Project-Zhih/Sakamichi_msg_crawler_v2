@@ -2,11 +2,12 @@ import dotenv from "dotenv";
 import yargs from "yargs";
 import {COMMANDS} from "./const/commandSetting";
 import DbMongo from "./database/DbMongo";
-import ApiControllerFactory from "./api/apiControllerFactory";
 import Crawler from "./Crawler";
 import Downloader from "./Downloader";
+import ApiController from "./api/ApiController";
 
-dotenv.config();
+const envPath = `${process.cwd()}/.env`;
+dotenv.config({path: envPath});
 
 const args = yargs.options(COMMANDS).help().argv as {
     group: string;
@@ -17,6 +18,7 @@ const args = yargs.options(COMMANDS).help().argv as {
     time: string;
     // startDate: string;
 };
+
 
 async function main() {
     try {
@@ -31,7 +33,7 @@ async function main() {
         // COMMAND GET_MEMBER_LIST
         if (args.showMember) {
             const group = args.showMember;
-            const apiController = ApiControllerFactory.create(group);
+            const apiController = ApiController.create(group);
 
             const crawler = new Crawler({
                 apiController: apiController,
@@ -45,7 +47,7 @@ async function main() {
         // COMMAND UPDATE_MEMBER_LIST
         if (args.updateMemberList) {
             const group = args.updateMemberList;
-            const apiController = ApiControllerFactory.create(group);
+            const apiController = ApiController.create(group);
             const crawler = new Crawler({
                 apiController: apiController,
                 db: db,
@@ -57,7 +59,7 @@ async function main() {
         // COMMAND UPDATE_PHONE_IMAGE
         if (args.updatePhoneImage) {
             const group = args.updatePhoneImage;
-            const apiController = ApiControllerFactory.create(group);
+            const apiController = ApiController.create(group);
             const crawler = new Crawler({
                 apiController: apiController,
                 db: db,
@@ -69,7 +71,7 @@ async function main() {
 
         if (args.group) {
             const group = args.group;
-            const apiController = ApiControllerFactory.create(group);
+            const apiController = ApiController.create(group);
             const crawler = new Crawler({
                 apiController: apiController,
                 db: db,

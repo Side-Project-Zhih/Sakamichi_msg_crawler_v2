@@ -1,4 +1,6 @@
 import axios, {AxiosResponse} from "axios";
+import API_MAP from "./ApiMap";
+import {ApiAndSetting} from "./ApiAndSetting";
 
 export type RawMessage = {
     id: number;
@@ -28,13 +30,27 @@ type TRequestHeader = {
     Authorization?: string;
 };
 
-export default abstract class ApiController {
-    abstract name: string;
-    protected abstract GET_UPDATE_TOKEN: string;
-    protected abstract GET_MEMBER_LIST: string;
-    protected abstract GET_MESSAGE: string;
-    protected abstract GET_PHONE_IMAGE: string;
-    protected abstract refreshToken: string;
+export default class ApiController {
+    name: string;
+    protected GET_UPDATE_TOKEN: string;
+    protected GET_MEMBER_LIST: string;
+    protected GET_MESSAGE: string;
+    protected GET_PHONE_IMAGE: string;
+    protected refreshToken: string;
+
+    private constructor(api: ApiAndSetting) {
+        this.name = api.name;
+        this.GET_UPDATE_TOKEN = api.GET_UPDATE_TOKEN;
+        this.GET_MEMBER_LIST = api.GET_MEMBER_LIST;
+        this.GET_MESSAGE = api.GET_MESSAGE;
+        this.GET_PHONE_IMAGE = api.GET_PHONE_IMAGE;
+        this.refreshToken = api.refreshToken;
+    }
+
+    static create(groupName: string): ApiController {
+        const api = API_MAP[groupName];
+        return new ApiController(api);
+    }
 
     async getAccessToken() {
         const payload = {refresh_token: this.refreshToken};
