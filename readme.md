@@ -1,9 +1,11 @@
 # sakamichi MSG crawler
 
 ## donate me 請我喝咖啡
-
-https://www.buymeacoffee.com/zhihdd
++ [donate link](https://www.buymeacoffee.com/zhihdd)
 -- -
+## description  
+
+----------------  
 快速下載message資料保存在database  
 並有簡易server讓你瀏覽msg
 
@@ -18,9 +20,9 @@ https://www.buymeacoffee.com/zhihdd
 &emsp;
 ### 支援自行改code擴充，ex: 飛鳥message
 #### 簡易教學
-1. 請依照範例 src/api/SakuraApiController.ts 建立一個新的api controller ex: AsukaApiController.ts , 可完全複製進行修改
-2. 修改其內部所有內容，API對應內容、name、refreshToken
-3. src/apiControllerFactory.ts 新增一個case，並且將你的controller引入
+1. 請依照範例 src/api/SakuraApiSetting.ts 建立一個新的api setting ex: AsukaApiSetting.ts , 可完全複製進行修改
+2. 修改其內部所有內容，API對應內容、name、refreshToken 全部
+3. src/ApiMap.ts  新增一個對應的api setting
 4. 確認 .env 是否有加入你新增的refreshToken
 5. compile ts file
 6. 執行 dst/app.js -g {新增的group} 
