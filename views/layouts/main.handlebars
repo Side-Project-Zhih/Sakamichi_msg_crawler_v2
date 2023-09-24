@@ -32,21 +32,7 @@
   const group = document.querySelector('#group');
   const memberElem = document.querySelector('#member');
   group.addEventListener('change', (event) => {
-    let memberList;
-    switch (group.value) {
-      case 'sakura': {
-        memberList = list['sakura'];
-        break;
-      }
-      case 'nogi': {
-        memberList = list['nogi'];
-        break;
-      }
-      case 'hinata': {
-        memberList = list['hinata'];
-        break;
-      }
-    }
+    const memberList = list[group.value];
     const oldOptions = document.querySelectorAll('#member option');
     oldOptions.forEach(item => item.remove());
 
