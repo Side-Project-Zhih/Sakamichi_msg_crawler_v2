@@ -1,6 +1,10 @@
 const dayjs = require("dayjs");
+const dotenv = require("dotenv");
+const envPath = `${process.cwd()}/.env`;
+dotenv.config({path: envPath});
 
 const DATE_FORMAT = "YYYYMMDDHHmmss";
+const YOUR_NAME = process.env.YOUR_NAME;
 
 async function getTargetDayMessages(req, res) {
     const {group, memberId, year_month, day} = req.params;
@@ -10,7 +14,7 @@ async function getTargetDayMessages(req, res) {
     const startDate = dateObject.utc().format(DATE_FORMAT);
     const endDate = dateObject.utc().add(1, "day").format(DATE_FORMAT);
 
-    let messages =await  req.db
+    let messages = await req.db
         .collection("Message")
         .find({
             group: group,
@@ -29,7 +33,17 @@ async function getTargetDayMessages(req, res) {
         ({
             ...message,
             published_at: dayjs.utc(message.published_at).local().format("YYYY/MM/DD HH:mm"),
-        }));
+        })).map(message => {
+        let {text} = message;
+        const replaceSymbol = '％％％'
+        if (text.includes(replaceSymbol) && YOUR_NAME) {
+            text = text.replace(replaceSymbol, YOUR_NAME)
+        }
+        return {
+            ...message,
+            text
+        }
+    });
 
     const members = await req.db
         .collection("Member")
