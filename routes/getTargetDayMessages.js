@@ -6,6 +6,20 @@ dotenv.config({path: envPath});
 const DATE_FORMAT = "YYYYMMDDHHmmss";
 const YOUR_NAME = process.env.YOUR_NAME;
 
+function replaceReplaceSymbolByDefaultName(text) {
+
+    const replaceSymbols = ['％％％', '%%%']
+
+    for (const replaceSymbol of replaceSymbols) {
+        if (text.includes(replaceSymbol) && YOUR_NAME) {
+            text = text.replace(replaceSymbol, YOUR_NAME)
+            break
+        }
+    }
+
+    return text;
+}
+
 async function getTargetDayMessages(req, res) {
     const {group, memberId, year_month, day} = req.params;
     const [year, month] = year_month.split("-");
@@ -34,11 +48,10 @@ async function getTargetDayMessages(req, res) {
             ...message,
             published_at: dayjs.utc(message.published_at).local().format("YYYY/MM/DD HH:mm"),
         })).map(message => {
+
         let {text} = message;
-        const replaceSymbol = '％％％'
-        if (text.includes(replaceSymbol) && YOUR_NAME) {
-            text = text.replace(replaceSymbol, YOUR_NAME)
-        }
+        text = text ? replaceReplaceSymbolByDefaultName(text) : text;
+
         return {
             ...message,
             text
